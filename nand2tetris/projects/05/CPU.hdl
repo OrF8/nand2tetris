@@ -1,0 +1,90 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Hack CPU (Central Processing unit), consisting of an ALU,
+ * two registers named A and D, and a program counter named PC.
+ * The CPU is designed to fetch and execute instructions written in 
+ * the Hack machine language. In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM==0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time step. If reset==1 then the 
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? (1 bit)
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // Put your code here:
+	// Determine if the instruction is a C-instruction (notInstruction is 1 if C-instruction)
+    Not (in=instruction[15], out=notInstruction);
+
+    // Select between instruction and outM1 based on instruction type
+    Mux16 (a=outM1, b=instruction, sel=notInstruction, out=instruc);
+
+    // Determine whether to load the A register: Set inA based on the instruction
+    Or (a=notInstruction, b=instruction[5], out=inA);
+
+    // Load the A register with instruction or ALU output, based on inA signal
+    ARegister (in=instruc, load=inA, out=A, out[0..14]=addressM);
+
+    // Select between A register output and M input based on aORm signal
+    And (a=instruction[15], b=instruction[12], out=aORm);
+    Mux16 (a=A, b=inM, sel=aORm, out=AM);
+
+    // Compute ALU output using D and selected AM, with control bits from instruction
+    ALU (x=D, y=AM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM1, out=outM, zr=zr, ng=ng);
+
+    // Determine whether to load the D register based on instruction[4]
+    And (a=instruction[15], b=instruction[4], out=inD);
+    DRegister (in=outM1, load=inD, out=D);
+
+    // Determine if the write to memory is required based on instruction[3]
+    And (a=instruction[15], b=instruction[3], out=writeM);
+
+    // Check conditions for the jump instructions (jgt, jeq, jlt)
+    Not (in=ng, out=positive);      // Check if the ALU output is positive
+    Not (in=zr, out=nzr);           // Check if the ALU output is non-zero
+    And (a=instruction[15], b=instruction[0], out=jgt);  // Jump if greater than
+    And (a=positive, b=nzr, out=posnzr); // ALU output is positive and non-zero
+    And (a=jgt, b=posnzr, out=load1);    // Enable jump if jgt and condition hold
+
+    // Check for jump if equal condition
+    And (a=instruction[15], b=instruction[1], out=jeq);
+    And (a=jeq, b=zr, out=load2);        // Jump if equal (ALU output is zero)
+
+    // Check for jump if less than condition
+    And (a=instruction[15], b=instruction[2], out=jlt);
+    And (a=jlt, b=ng, out=load3);        // Jump if less than (ALU output is negative)
+
+    // Combine all jump conditions into a single load signal
+    Or (a=load1, b=load2, out=loadH);
+    Or (a=load3, b=loadH, out=load);
+
+    // Program Counter: Load address from A if jump condition holds, otherwise increment
+    PC (in=A, load=load, inc=true, reset=reset, out[0..14]=pc);
+}

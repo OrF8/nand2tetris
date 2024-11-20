@@ -1,0 +1,61 @@
+// This file is part of nand2tetris, as taught in The Hebrew University, and
+// was written by Aviv Yaish. It is an extension to the specifications given
+// [here](https://www.nand2tetris.org) (Shimon Schocken and Noam Nisan, 2017),
+// as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
+// Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+
+// The ExtendAlu chip is an extension of the standard ALU which also supports
+// shift operations.
+// The inputs of the extended ALU are instruction[9], x[16], y[16].
+// The "ng" and "zr" output pins behave the same as in the regular ALU.
+// The "out" output is defined as follows:
+// If instruction[8]=1 and instruction[7]=1 the output is identical to the 
+// regular ALU, where:
+// instruction[5]=zx, instruction[4]=nx, ..., instruction[0]=no
+// Else, if instruction[8]=0 and instruction[7]=1, the output is a shift:
+// - If instruction[4] == 0, the input "y" will be shifted, otherwise "x".
+// - If instruction[5] == 0, the shift will be a right-shift, otherwise left.
+// - All other inputs are undefined.
+
+CHIP ExtendAlu {
+     IN x[16], y[16], instruction[9];
+     OUT out[16], zr, ng;
+     
+     PARTS:
+     // Put your code here:
+	 // Instantiate the regular ALU and connect its inputs and outputs.
+     // The regular ALU operates based on instruction bits 0-5:
+     // zx, nx, zy, ny, f, and no (same as a standard ALU)
+	 ALU (x=x, y=y, zx=instruction[5], nx=instruction[4], zy=instruction[3], ny=instruction[2], f=instruction[1], no=instruction[0], out=ALUout, zr=ALUzr, ng=ALUng);
+	 
+	 // Check if the current operation should be a regular ALU operation.
+     // regALU is set to 1 if both instruction[8] and instruction[7] are 1.
+	 And (a=instruction[8], b=instruction[7], out=regALU);
+	 
+	 // Select the input to be shifted: y if instruction[4] is 0, otherwise x.
+	 Mux16 (a=y, b=x, sel=instruction[4], out=shiftInput);
+	 
+	 // Perform the shuft
+     ShiftLeft (in=shiftInput, out=leftShifted);
+     ShiftRight (in=shiftInput, out=rightShifted);
+	 
+	 // Choose between left and right shift based on instruction[5].
+     // If instruction[5] is 0, the shift is to the right; otherwise, it's to the left.
+     Mux16 (a=rightShifted, b=leftShifted, sel=instruction[5], out=shiftOut, out[0..7]=msb, out[8..15]=lsb, out[15]=shiftNg);
+	 
+	 // Choose between the output of the ALU and the shift operation based on regALU.
+     // If regALU is 1, use ALU output; otherwise, use shift output.
+	 Mux16 (a=shiftOut, b=ALUout, sel=regALU, out=out);
+
+     Or8Way (in=msb, out=outL); // If any bit in msb is 1, outL=1, otherwise 0
+     Or8Way (in=lsb, out=outR); // If any bit in lsb is 1, outR=1, otherwise 0
+     Or (a=outL, b=outR, out=out1s); // If there are 1 bits in out, out1s=1, otherwise 0
+     Not (in=out1s, out=shiftZr);
+
+     // Final zr: Select between ALUzr and shiftZr based on regALU
+     Mux (a=shiftZr, b=ALUzr, sel=regALU, out=zr);
+    
+     // Final ng: Select between ALUng and shiftNg based on regALU
+     Mux (a=shiftNg, b=ALUng, sel=regALU, out=ng);
+}
