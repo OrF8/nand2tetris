@@ -66,9 +66,9 @@ class CodeWriter:
         elif command == "not":
             self._output_stream.write("M=!M\n")
         elif command == "shiftleft":
-            self._output_stream.write("M=M<<1\n")
+            self._output_stream.write("M=M<<\n")
         elif command == "shiftright":
-            self._output_stream.write("M=M>>1\n")
+            self._output_stream.write("M=M>>\n")
 
     def _write_comparison(self, command: str) -> None:
         """
