@@ -20,4 +20,4 @@ A repository for the projects in course 67925 (Computer Cons. Workshop: From Nan
 100
 
 ### Project 7 Grade
-86
+91
