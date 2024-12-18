@@ -86,7 +86,7 @@ class GameManager {
         var int collisionRadiusSquared;
 
         let hasGameEnded = ~snake.advance(direction);
-        do Sys.wait(100);
+        do Sys.wait(75);
 
         if (~hasGameEnded) {
             let snakeSize = snake.size();
