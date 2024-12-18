@@ -1,0 +1,77 @@
+/** Apple class for the Snake game. */
+class Apple {
+
+    field int x;
+    field int y;
+    field int radius;
+    field Array positions;
+    field int positionIndex;
+
+    /** Initializes the Apple object. */
+    constructor Apple new() {
+        let x = 216;
+        let y = 104;
+        let radius = 4;
+        let positionIndex = 0;
+        let positions = Array.new(10);
+        let positions[0] = x;
+        let positions[1] = y;
+        let positions[2] = 232;
+        let positions[3] = 136;
+        let positions[4] = 168;
+        let positions[5] = 184;
+        let positions[6] = 200;
+        let positions[7] = 152;
+        let positions[8] = 376;
+        let positions[9] = 104;
+        do draw();
+        return this;
+    }
+
+
+    /** Disposes the Apple object. */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Returns the x-coordinate of the Apple object. */
+    method int getX() {
+        return x;
+    }
+
+    /** Returns the y-coordinate of the Apple object. */
+    method int getY() {
+        return y;
+    }
+
+    /** Returns the radius of the Apple object. */
+    method int getRadius() {
+        return radius;
+    }
+
+    /** Draws the Apple object on the screen. */
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawCircle(x, y, radius);
+        return;
+    }
+
+    /** Erases the Apple object from the screen. */
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawCircle(x, y, radius);
+        return;
+    }
+
+    /** Creates a new Apple object. */
+    method void createNew() {
+        do erase();
+        let positionIndex = MathUtils.mod(positionIndex + 2, 10);
+        let x = positions[positionIndex];
+        let y = positions[positionIndex + 1];
+        do draw();
+        return;
+    }
+
+}

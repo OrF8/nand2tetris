@@ -1,0 +1,76 @@
+/** 
+ *  The main class of the Snake game.
+ */
+class Main {
+
+    /** Shows the game over screen with the final score. Returns the user's answer */
+    function char showResults(int score) {
+        var String finishMessage;
+        var String scoreMessage;
+        var String playAgainMessage;
+        var char answer;
+        var boolean isAnswerValid;
+
+        let playAgainMessage = "Do you want to play again? (Y/N)";
+        let finishMessage = "Game Over!";
+        let scoreMessage = "Your score is: ";
+
+        do Screen.clearScreen();
+
+        do Screen.setColor(true);
+        do Screen.drawRectangle(170, 96, 340, 160);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(172, 98, 338, 158);
+        do Screen.setColor(true);
+        do Screen.drawRectangle(174, 100, 336, 156);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(175, 101, 335, 155);
+
+        do Output.moveCursor(10, 27);
+        do Output.printString(finishMessage);
+
+        do Output.moveCursor(12, 24);
+        do Output.printString(scoreMessage);
+
+        do Output.moveCursor(12, 39);
+        do Output.printInt(score);
+
+        do Output.moveCursor(16, 16);
+        do Output.printString(playAgainMessage);
+
+        let answer = 0;
+        let isAnswerValid = false;
+
+        while (~(isAnswerValid)) { // 'Y' | 'N'
+            let answer = Keyboard.keyPressed();
+            if (answer = 89) { // 'Y'
+                let isAnswerValid = true;
+            } else {
+                if (answer = 78) { // 'N'
+                    let isAnswerValid = true;
+                }
+            }
+        }
+
+        return answer;
+    }
+
+    /** The entry point of the game. */
+    function void main() {
+        var GameManager gameManager;
+        var int score;
+        var char answer;
+
+        let answer = 89; // 'Y'
+
+        while (answer = 89) { // 'Y'
+            let gameManager = GameManager.new();
+            let score = gameManager.run();
+            do gameManager.dispose();
+            let answer = Main.showResults(score);
+        }
+        
+        return;
+    }
+
+}

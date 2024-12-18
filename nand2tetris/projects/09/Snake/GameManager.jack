@@ -1,0 +1,110 @@
+/**
+ * This file contains the GameManager class,
+ * which is responsible for managing the game.
+ * It creates the snake, ghosty, and border objects, and handles the game loop.
+ */
+class GameManager {
+
+    field Snake snake;
+    field Apple apple;
+    field Border border;
+    field int score;
+    field int direction;
+    field boolean hasGameEnded;
+
+    /** Constructs a new game manager. */
+    constructor GameManager new() {
+        do Screen.clearScreen();
+
+        let border = Border.new(32, 32, 448, 208, 3);
+        let snake = Snake.new(border);
+        let apple = Apple.new();
+        let score = 0;
+        let direction = 3;  // Right
+        
+        let hasGameEnded = false;
+        do border.draw();
+        do Text.drawScore();
+        do Text.drawGhostyTitle();
+        return this;
+    }
+
+    /** Disposes this game manager. */
+    method void dispose() {
+        do snake.dispose();
+        do apple.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Runs the game loop. */
+    method int run() {
+        var char key;
+
+        while (~hasGameEnded) {
+            do border.draw();
+            do Text.drawPoints(score);
+            do apple.draw();
+
+            let key = Keyboard.keyPressed();
+
+            if (key = 81) { // Q
+                let hasGameEnded = true;
+            }
+            
+            if (~hasGameEnded) {
+                if (key = 131 & ~(direction = 2)) { // Up
+                    let direction = 1;
+                }
+                if (key = 133 & ~(direction = 1)) { // Down
+                    let direction = 2;
+                }
+                if (key = 132 & ~(direction = 4)) { // Right
+                    let direction = 3;
+                }
+                if (key = 130 & ~(direction = 3)) { // Left
+                    let direction = 4;
+                }
+
+                do moveSnake();
+            }
+        }
+        return score;
+    }
+
+    /** Moves the snake. */
+    method void moveSnake() {
+        var int snakeHeadX;
+        var int snakeHeadY;
+        var int appleX;
+        var int appleY;
+        var int snakeSize;
+        var int appleRadius;
+        var int dx;
+        var int dy;
+        var int distanceSquared;
+        var int collisionRadiusSquared;
+
+        let hasGameEnded = ~snake.advance(direction);
+        do Sys.wait(100);
+
+        if (~hasGameEnded) {
+            let snakeSize = snake.size();
+            let snakeHeadX = snake.getX() + Math.divide(snakeSize, 2);
+            let snakeHeadY = snake.getY() + Math.divide(snakeSize, 2);
+            let appleX = apple.getX();
+            let appleY = apple.getY();
+            let appleRadius = apple.getRadius();
+
+            if (appleX = snakeHeadX & appleY = snakeHeadY) { // If the snake has eaten the apple
+                do apple.createNew();
+                do snake.grow(direction);
+                let score = score + 1;
+            }
+            return;
+        }
+        return;
+}
+
+
+}

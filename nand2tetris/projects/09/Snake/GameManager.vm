@@ -1,0 +1,214 @@
+function GameManager.new 0
+push constant 6
+call Memory.alloc 1
+pop pointer 0
+call Screen.clearScreen 0
+pop temp 0
+push constant 32
+push constant 32
+push constant 448
+push constant 208
+push constant 3
+call Border.new 5
+pop this 2
+push this 2
+call Snake.new 1
+pop this 0
+call Apple.new 0
+pop this 1
+push constant 0
+pop this 3
+push constant 3
+pop this 4
+push constant 0
+pop this 5
+push this 2
+call Border.draw 1
+pop temp 0
+call Text.drawScore 0
+pop temp 0
+call Text.drawGhostyTitle 0
+pop temp 0
+push pointer 0
+return
+function GameManager.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call Snake.dispose 1
+pop temp 0
+push this 1
+call Apple.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function GameManager.run 1
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push this 5
+not
+not
+if-goto WHILE_END0
+push this 2
+call Border.draw 1
+pop temp 0
+push this 3
+call Text.drawPoints 1
+pop temp 0
+push this 1
+call Apple.draw 1
+pop temp 0
+call Keyboard.keyPressed 0
+pop local 0
+push local 0
+push constant 81
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop this 5
+label IF_FALSE0
+push this 5
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 0
+push constant 131
+eq
+push this 4
+push constant 2
+eq
+not
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 1
+pop this 4
+label IF_FALSE2
+push local 0
+push constant 133
+eq
+push this 4
+push constant 1
+eq
+not
+and
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 2
+pop this 4
+label IF_FALSE3
+push local 0
+push constant 132
+eq
+push this 4
+push constant 4
+eq
+not
+and
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 3
+pop this 4
+label IF_FALSE4
+push local 0
+push constant 130
+eq
+push this 4
+push constant 3
+eq
+not
+and
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 4
+pop this 4
+label IF_FALSE5
+push pointer 0
+call GameManager.moveSnake 1
+pop temp 0
+label IF_FALSE1
+goto WHILE_EXP0
+label WHILE_END0
+push this 3
+return
+function GameManager.moveSnake 10
+push argument 0
+pop pointer 0
+push this 0
+push this 4
+call Snake.advance 2
+not
+pop this 5
+push constant 100
+call Sys.wait 1
+pop temp 0
+push this 5
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 0
+call Snake.size 1
+pop local 4
+push this 0
+call Snake.getX 1
+push local 4
+push constant 2
+call Math.divide 2
+add
+pop local 0
+push this 0
+call Snake.getY 1
+push local 4
+push constant 2
+call Math.divide 2
+add
+pop local 1
+push this 1
+call Apple.getX 1
+pop local 2
+push this 1
+call Apple.getY 1
+pop local 3
+push this 1
+call Apple.getRadius 1
+pop local 5
+push local 2
+push local 0
+eq
+push local 3
+and
+push local 1
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 1
+call Apple.createNew 1
+pop temp 0
+push this 0
+push this 4
+call Snake.grow 2
+pop temp 0
+push this 3
+push constant 1
+add
+pop this 3
+label IF_FALSE1
+push constant 0
+return
+label IF_FALSE0
+push constant 0
+return
