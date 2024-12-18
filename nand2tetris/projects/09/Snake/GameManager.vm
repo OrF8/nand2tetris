@@ -151,7 +151,7 @@ push this 4
 call Snake.advance 2
 not
 pop this 5
-push constant 100
+push constant 75
 call Sys.wait 1
 pop temp 0
 push this 5
