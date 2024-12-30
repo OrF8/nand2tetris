@@ -1,0 +1,9 @@
+class StringPar {
+
+	method void blaBla(String h){
+	var int i;
+	let i = i;
+	return;
+	}	
+
+}

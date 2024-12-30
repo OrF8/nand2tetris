@@ -1,0 +1,13 @@
+class ExpreList{
+	method void main(){
+	var int i, base, offset, y, size, x;
+	let size = 3;
+	let y = 9;
+	let x = 2;
+	let i = 0;
+	let base = 2;
+	let offset = 10;
+	let i = Math.multiply(Math.abs(i),base) + offset;
+	return;
+	}
+}

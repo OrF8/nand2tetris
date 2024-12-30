@@ -1,0 +1,8 @@
+class MethCall{
+	method int blaBla(){
+	var int i;
+	var String nam,name;
+	let name = name.appendChar(nam.charAt(i));
+	return i;
+	}
+}

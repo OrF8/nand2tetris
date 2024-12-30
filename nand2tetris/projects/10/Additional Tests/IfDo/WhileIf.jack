@@ -1,0 +1,13 @@
+class WhileIf {
+
+    method void main(){
+	var int g,i;	
+	while (g>i){
+ 		if (i > 0){
+		 let i = i;
+		}
+	}
+	return;
+	}
+}
+ 

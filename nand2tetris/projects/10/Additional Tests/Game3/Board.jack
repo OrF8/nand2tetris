@@ -1,0 +1,130 @@
+/**
+ * Encapsulates a board for the RushHour game.
+ */
+class Board {
+	field Array board; // a 2D matrix.
+	static int HORZ_CAR, VERT_CAR, HORZ_TRUCK, VERT_TRUCK, RED;
+
+	constructor Board new(String preset) {
+			var int i;
+			let HORZ_CAR = 1;
+			let VERT_CAR = 2;
+			let HORZ_TRUCK = 3;
+			let VERT_TRUCK = 4;
+			let RED = 5;
+
+			let board = Array.new(6);
+			// initialize matrix to hold board		
+			let i = 0;
+			while (i<6) {
+				let board[i] = Array.new(6);
+				let i = i + 1;
+			}
+				
+			do init(preset); // fill the board with the current preset
+		
+			return this;
+		}
+
+	method void init(String preset) {
+		var int i,j,k;
+		var char c;
+		var Array temp;
+		let i = 0;
+		// set board to initial state
+		while (i<36) {			
+			let j = i/6;				
+			let k = Board.modulus(i,6);	
+			let temp = board[j];	
+			let temp[k] = preset.charAt(i);
+			let i = i + 1;
+		}
+
+		return;
+	}
+
+	method void set(int i,int j, char c) {
+		var Array temp;
+
+		let temp = board[i];
+		let temp[j] = c;
+		return;
+	} 
+	/**
+		 Accessor method for position (i,j) in the board.
+	*/
+	method char get(int i, int j) {
+		var Array temp;
+		let temp = board[i];
+		return temp[j];
+	}
+
+	/* returns the type of the vehicle that starts at the given coordinates or 0 if there
+	   isn't such car.
+	*/
+	method int checkVehicle(int i, int j) {
+		var char c1,c2;
+		let c1 = get(i,j);
+		
+		if (c1 = 60) { // <  => starts horizontal
+			let c2 = get(i, j+1);
+			if (c2 = 62) { // >
+				return HORZ_CAR;
+			}
+			return HORZ_TRUCK;
+		}
+		if (c1 = 94) { // ^
+			let c2 = get(i+1, j);
+			if (c2 = 118) { // v
+				return VERT_CAR;
+			}
+			return VERT_TRUCK;
+		}
+		if (c1 = 114) { // r 
+			return RED;
+		}
+		return 0;	
+	}
+
+	function int modulus(int num, int mod) {		
+		if (num < mod) {			
+			return num;
+		}
+		return Board.modulus(num-mod,mod);
+	}
+
+	method void toString() {		
+		var char c;
+		var int i,j;
+		var Array temp;
+		do Output.println();
+		let i = 0;
+		do Output.printString("board.toString() :");
+		do Output.println();	
+		while (i < 6) {
+			let j = 0;
+			let temp = board[i];
+			while (j < 6) {
+				do Output.printChar(temp[j]);
+				let j = j + 1;
+			}
+			let i = i + 1;
+			do Output.println();		
+
+		}	
+		return;
+	}
+
+	method void dispose() {
+		var Array temp;
+		var int i;
+		let i = 0;
+		while (i < 6) {
+			let temp = board[i];
+			do temp.dispose();
+			let i = i+1;
+		}
+		do board.dispose();
+		return;
+	}
+}

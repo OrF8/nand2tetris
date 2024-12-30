@@ -1,0 +1,13 @@
+class IfDo{
+
+	method void blaBla(int x, int y){
+		if(x>y){
+			let x = x - y;
+			}
+			else{
+			let y = y - x;
+			}
+		do Screen.drawRectangle(x, y, x + y, y + x);
+		return;
+	}
+}

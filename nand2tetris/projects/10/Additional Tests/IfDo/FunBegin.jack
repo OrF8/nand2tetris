@@ -1,0 +1,76 @@
+/**
+	 supplies methods for drawing poylgons of up to 6'th order (hexagons),
+	 cars & trucks. All methods receive parameters sx, sy which are assumed
+	 to be the current center of the axes system. In addition, a boolean
+	 horz is supplied to some of the method, enabling them to swap 
+	 the x and y axes for purposes of drawing the same drawing, only
+	 vertically instead of horizontally. This was inserted into the RushHourGraphics 8 & % & $ # 
+	* 
+	 interface in order to reduce unnecessary repetition of code.	
+	 The methods for drawing geometrical primitives have the same general 
+	 form of the ones appearing in the Screen class, except for receiving
+	 the above parameters. Holds compact representations of game presets for the RushHour game.
+	 These are 6X6 matrices spread to lines , coded as Strings. 
+	 The representation of objects in the game is as follows:
+	 <>		horizontal car 
+
+	 <*>   horizontal truck
+
+	 ^     vertical car
+	 v
+
+	 ^     vertical truck
+	 *
+	 v
+
+	 rd   red car
+ 
+	 -    empty block
+
+	 for example, the first level's matrix is:
+
+	 <>---^
+	 ^--^-*
+	 *rd*-v
+	 v--v--
+	 ^---<>
+	 v-<*>-	
+*/
+/*****************************************************************************
+ *  File  : Bomb.jack 	          Ex   : 9
+ * 
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias	   ID : 03498446-8
+ *
+ * This class represents a bomb in the red alert game.
+ ******************************************************************************/
+
+/*****************************************************************************
+ * Class Bomb:
+ ******************************************************************************/
+class FunBegin {
+/*############################################################################
+  Checks wether the bomb is in the X margine of a submarine according to the 
+  given X location in the sea and a given submarine's width.
+  returns true if the bomb is the X margine of the submarine, false otherwisw
+ #############################################################################*/ 
+/*****************************************************************************
+ * Checks whether a submarine was hit.
+ ******************************************************************************/
+	function void blaBla(boolean h){	//"<>---^^--^-**rd*-vv--v--^---<>v-<*>-";
+	//init strings init strings
+	var String s;
+	var int i;//"<>---^^--^-**rd*-vv--v--^---<>v-<*>-";
+	let i=i;//init strings- init strings
+	let s="S1";//"<>---^^--^-**rd*-vv--v--^---<>v-<*>-";
+	return;	
+	}
+/*****************************************************************************
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias        ID : 03498446-8
+ *
+ * This class represents a bomb in the red alert game.
+ ***********************************************************************/
+
+
+}

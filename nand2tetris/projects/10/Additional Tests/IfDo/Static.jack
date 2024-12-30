@@ -1,0 +1,9 @@
+class Static {
+field int speed;
+static int bottom;
+ function void main() {
+	var int i;
+	let i = i;
+	return;
+	}
+}

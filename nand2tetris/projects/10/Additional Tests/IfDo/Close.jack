@@ -1,0 +1,10 @@
+class Close{
+
+	method void main(boolean h){
+
+	var int i;
+	let i=i-123;
+	let i=i/2;
+	return;
+	}	
+}

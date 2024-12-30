@@ -1,0 +1,21 @@
+class OpAndOp{
+	method void main(){
+	var int i,base,offset;
+	var boolean t;
+	let i = 0;
+	let base = 2;
+	let offset = 10;
+	let t = ( ~ base) & (~ i);
+	let t = ( ~ offset) | ( ~ base);
+	let t = ( ~ base) < ( ~ offset) ; 
+	let t = ( ~ base) > ( ~ offset) ; 
+	let t = ( ~ base) = ( ~ offset) ; 
+	let t = ( ~ 81) & (~ i);
+	let t = ( ~ 81) | ( ~ base);
+	let t = ( ~ 81) < ( ~ offset) ; 
+	let t = ( ~ 81) > ( ~ offset) ; 
+	let t = ( ~ 81) = ( ~ offset) ; 
+	let t =  ((~(i = 113)) & (~(i = 81)) & (~(base)));
+	return;
+	}
+}

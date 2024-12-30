@@ -1,0 +1,149 @@
+<class>
+  <keyword> class </keyword>
+  <identifier> OpCheck </identifier>
+  <symbol> { </symbol>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> main </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> int </keyword>
+        <identifier> i </identifier>
+        <symbol> , </symbol>
+        <identifier> base </identifier>
+        <symbol> , </symbol>
+        <identifier> offset </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> boolean </keyword>
+        <identifier> t </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> i </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> base </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 2 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> offset </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 10 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> t </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> base </identifier>
+            </term>
+            <symbol> &amp; </symbol>
+            <term>
+              <identifier> i </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> t </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> offset </identifier>
+            </term>
+            <symbol> | </symbol>
+            <term>
+              <identifier> base </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> t </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> base </identifier>
+            </term>
+            <symbol> &lt; </symbol>
+            <term>
+              <identifier> offset </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> t </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> base </identifier>
+            </term>
+            <symbol> &gt; </symbol>
+            <term>
+              <identifier> offset </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> t </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> base </identifier>
+            </term>
+            <symbol> = </symbol>
+            <term>
+              <identifier> offset </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <symbol> } </symbol>
+</class>

@@ -1,0 +1,135 @@
+/*****************************************************************************
+ *  File  : Bomb.jack 	          Ex   : 9
+ * 
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias	   ID : 03498446-8
+ *
+ * This class represents a bomb in the red alert game.
+ ******************************************************************************/
+
+/*****************************************************************************
+ * Class Bomb:
+ ******************************************************************************/
+class Bomb
+{
+field int _x;
+field int _y;
+field int _radius;
+field int _height;
+field int _speed;
+static int _bottom;
+
+/*############################################################################
+ Ctor for Bomb, inits all the needed fields.
+#############################################################################*/  	
+constructor Bomb new(int x, int y, int radius, int speed)
+{
+    let _x = x;
+    let _y = y;
+    let _radius = radius;
+    let _speed = speed;
+    let _bottom = 255;
+    return this;
+}
+
+/*############################################################################
+  Draws a bomb shape on a designated location either in white (erasing) or in
+  black (drawing).  
+ #############################################################################*/  	
+method void draw_Bomb(int x, int y, boolean color)
+{
+
+ do Screen.setColor(color);
+ do Screen.drawCircle(x,y,_radius);
+ return;
+}
+
+/*############################################################################
+  Disposes a bomb object.
+ #############################################################################*/  
+method void dispose()
+{
+	do draw_Bomb(_x,_y,false);// also clearing the bomb drawing
+	do Memory.deAlloc(this);
+	return;
+}
+
+/*############################################################################
+  A draw method, written in order to supply a unified interface for all 
+  drwable objects.
+ #############################################################################*/  
+method void draw()
+{
+	do draw_Bomb(_x,_y,true); 
+	return;
+}
+
+/*############################################################################
+  Moves the bomb along the y axis.
+ #############################################################################*/  
+method boolean move()
+{
+ var int oldY;
+ let oldY = _y;
+
+ 	if ((_y+_speed) < (_bottom - _radius))
+	{
+	      	let _y = _y + _speed;	
+	}
+ 	else
+    	{
+		do draw_Bomb(_x, oldY, false);
+		return false;
+	}
+
+	do draw_Bomb(_x,oldY, false);
+	do draw(_x, _y, true);
+
+return true;
+}
+
+/*############################################################################
+  Checks wether the bomb is in the Y margine of a submarine according to the 
+  given Y location in the sea and a given submarine's height.
+  returns true if the bomb is the Y margine of the submarine, false otherwisw
+ #############################################################################*/  
+method boolean inYMargine(int seaHeight, int subHeight)
+{
+	var int h;
+	let h =  subHeight/2;
+	if  ( ((_y + _radius) > (seaHeight - h)) & ((_y - _radius) < (seaHeight + h)) )
+		{
+		return true;	
+		}
+	
+	if  ( (( _y - _radius) < (seaHeight + h)) & ((_y + _radius) > (seaHeight - h)) )
+		{
+		return true;
+		}	
+		
+	return false;
+}
+
+/*############################################################################
+  Checks wether the bomb is in the X margine of a submarine according to the 
+  given X location in the sea and a given submarine's width.
+  returns true if the bomb is the X margine of the submarine, false otherwisw
+ #############################################################################*/  
+method boolean inXMargine(int sub_X, int subWidth)
+{
+	var int w;
+	var int subX;
+	let w = subWidth/2;
+	let subX = sub_X;
+	
+
+	if  ( (_x < (subX+w)) & (_x > (subX-w)))
+	{
+	  return true;	
+	}
+	
+	return false;
+}
+    
+}//End of class Bomb
+

@@ -1,0 +1,283 @@
+/**
+ * A Shcorts(TM) game.
+ * A game consists of a few opening pages and a set of objects:
+ * Tanks and terrain. The game manages the flow of the game,
+ * decides when to shoot and what to do next. Every object is
+ * updated through the course of the game.
+ *
+ * @author <a href="mailto:omyan@cs.huji.ac.il">Omer Yanai</a>
+ */
+
+class Shcortz{
+    
+    // private fields
+      field Terrain terry;
+      field Array tanks;
+      field int playerNum;
+      field Tank currentTank;
+      field int leftLiving;
+
+
+      /** Constructs a new Shcortz Game. */
+      constructor Shcortz new(){
+	    var String pname,message,blank;
+	    var int i,offset,base,coX;
+	    let terry = Terrain.new();
+
+	    // Openeing pages
+	    
+	    do Output.moveCursor(7,28);
+	    let message = "SHCORTZ";
+	    do Output.printString(message);
+	    do message.dispose();
+	    
+	    do Output.moveCursor(13,19);
+	    let message = "The ultimate fighting game";
+	    do Output.printString(message);
+	    do message.dispose();
+	    
+	    do Output.moveCursor(17,18);
+	    let message = "Made for you by: Omer and Oded";
+	    do Output.printString(message);
+	    do message.dispose();
+
+	    // Seeding the random engine
+	    
+	    let message = "Enter a no. (1-1000): ";
+	    do Output.moveCursor(22,0);
+	    do terry.seed(Keyboard.readInt(message));
+	    do message.dispose();
+	    let blank =  "                                            ";
+	    do Output.moveCursor(22,0);
+	    do Output.printString(blank);
+	    
+	    let message = "How many players (2-8)? ";
+	    let playerNum = 0;
+	    while((playerNum < 2) | (playerNum > 8)){
+		  do Output.moveCursor(22,0);
+		  let playerNum = Keyboard.readInt(message);
+		  do Output.moveCursor(22,0);
+		  do Output.printString(blank);
+	    }
+	    let leftLiving = playerNum;
+	    do message.dispose();
+
+	    // constructing users tanks and placing them.
+	    
+	    let base = Math.divide(512,playerNum);
+	    let tanks = Array.new(playerNum);
+	    let message = "Enter player's name: ";
+	    let i = playerNum;
+	    while(i > 0){
+		  let offset =  base;
+		  while(~(offset < base)){
+			let offset = terry.pickValue();
+			let coX = Math.multiply(Math.abs(1 - i),base) + offset;
+			if((coX < 10) | (coX > 502)){
+			      let offset = base;
+			}
+		  }
+		  let i = i - 1;
+		  do Output.moveCursor(22,0);
+		  let pname = Keyboard.readLine(message);
+		  do Output.moveCursor(22,0);
+		  do Output.printString(blank);
+		  let tanks[i] =  Tank.new(pname,coX,0);
+	    }
+
+	    do message.dispose();
+	    do blank.dispose();
+	    do Screen.clearScreen();
+	    return this;
+      }
+
+
+      /** Deallocates the object's memory. */
+      method void dispose() {
+	    while(playerNum > 0){
+		  let currentTank = tanks[playerNum - 1];
+		  do currentTank.dispose();
+		  let playerNum = playerNum - 1;
+	    }
+	    do terry.dispose();
+	    do Memory.deAlloc(this);
+	    return;
+      }
+
+
+
+      /**
+       * update function, called at every cycle after action is made.
+       * calls the tanks to update their status.
+       */
+      method void update(int xBlow,int size){
+	    var int i,damage,life,x;
+	    var Tank t;
+	    if(~(playerNum > 0)){
+		  return;
+	    }
+	    let i = playerNum;
+	    while(i > 0){
+		  let t = tanks[i - 1];
+		  if(t.alive()){
+			do t.draw();
+			let x = t.getX();
+			let damage = Math.abs(xBlow - x);
+			if(damage < (size + 5)){
+			      let life = t.update(((size + 5) - damage),terry.getHeight(x));
+			      if(life < 0){
+				    do terry.explosion(x,9);
+				    do t.lifeAndDeath(false);
+				    let leftLiving = leftLiving - 1;
+				    do t.erase();
+			      }
+			}
+		  }
+		  let i = i - 1;
+	    }
+	    return;	    
+      }
+
+      /**
+       * Runs the game, gets input from the user and controls the flying
+       * of bullets and explosions.
+       */
+      method void run(){
+	    var char key;
+	    var boolean exit,blow;
+	    var int size,xBlow;
+	    var int i,j;
+	    var Bullet bully;
+	    var String message;
+	    do terry.initTerrain();
+	    let i = playerNum;
+	    
+	    // place tanks
+	    
+	    while(i > 0){
+		  let currentTank = tanks[i - 1];
+		  do currentTank.setY(terry.getHeight(currentTank.getX()));
+		  do currentTank.draw();
+		  let i = i - 1;
+	    }
+	    
+	    let size = 1;
+	    let i = playerNum;
+	    let exit = false;
+	    
+	    let message = "Bullet size: ";
+	    do Output.moveCursor(22,50);
+	    do Output.printString(message);
+	    do message.dispose();
+	    
+	    let currentTank = tanks[i - 1];
+	    do currentTank.myTurn();
+	    
+	    // The main routine for the game a cycle which walks through
+	    // the components of the game and updates their status.
+	    while(~exit){
+
+		// getting input from the user
+		  let key = Keyboard.keyPressed();
+
+
+		  // deciding on which action to take care
+
+		  // pressing 'q' causes exit
+		  if (key = 81) {
+		      let exit = true;
+		      do Screen.clearScreen();
+		  }
+
+		  // pressing space_bar causes shooting
+		  if (key = 32) {
+
+		      // creates bullet
+			let bully = currentTank.shoot(Math.multiply(size,3));
+			let blow = false;
+			while (~blow){
+			      let xBlow = terry.collides(bully.getX(),
+							 bully.getY(),
+							 bully.getNextX(),
+							 bully.getNextY());
+			      if(~(xBlow < 0)){
+				    let blow = true;
+			      }
+			      // as long the bullet is valid and didn't hit
+			      // the ground it is updated
+			      if((~blow) & (bully.valid())){
+				    do bully.tock();
+			      }
+			      else{
+				    let blow = true;
+			      }
+			}
+			if(bully.valid()){
+			      do bully.erase();
+			      do terry.explosion(xBlow,Math.multiply(size,3));
+			}
+
+			// Checking whether there are any other valid players
+			do update(xBlow,Math.multiply(size,3));
+			do bully.dispose();
+			do currentTank.endTurn();
+			let j = leftLiving;
+			while(j > 1){
+			      if(i = 1){
+				    let i = playerNum;
+			      }
+			      else{
+				    let i = i - 1;
+			      }
+			      let currentTank = tanks[i - 1];
+			      if(currentTank.alive()){
+				    do currentTank.myTurn();
+				    let j = 0;
+			      }
+			}
+			if(leftLiving < 2){ 
+			      do Screen.clearScreen();
+			      do Output.moveCursor(7,28);
+			      do Output.printString("THE END");
+			      return;
+			}
+		  }
+
+		  // controlling bullet size
+		  if (key = 49) {
+			let size = 1;
+		  }
+		  if (key = 50) {
+			let size = 2;
+		  }
+		  if (key = 51) {
+			let size = 3;
+		  }
+		  if (key = 52) {
+			let size = 4;
+		  }
+		  if (key = 53) {
+			let size = 5;
+		  }
+
+		  // controling aiming parameters: power and angle
+		  if (key = 131) {
+			do currentTank.powerUp();
+		  }
+		  if (key = 133) {
+			do currentTank.powerDown();
+		  }
+		  if (key = 130) {
+			do currentTank.aimLeft();
+		  }
+		  if (key = 132) {
+			do currentTank.aimRight();
+		  }
+
+		  do Output.moveCursor(22,62);
+		  do Output.printInt(size);
+
+	    }
+	    return;
+      }
+}

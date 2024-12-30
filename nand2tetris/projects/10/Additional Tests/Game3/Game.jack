@@ -1,0 +1,381 @@
+/**
+ * Contains the game loop for the RushHour game, which in each iteration receives 
+ input from the user and modifies the game status accordingly.
+*/
+class Game {
+	field int num,cursorI,cursorJ,size;
+	field Board board;
+	static boolean HORZ,VERT;		
+	static int START_X,START_Y; // the x,y coordinates of the right top corner of the board.
+	static int UP,DOWN,LEFT,RIGHT,NONE; // directions.
+	static char EMPTY;
+	/**
+	 * Constructs a new Game object.
+	 Parameters : boardNum - the number of the preset board to be obtained from
+	 the presets collection and played.					
+	*/
+
+	constructor Game new(int boardNum) {
+			// initializations
+			let num = boardNum; 
+			let size = 40;
+			let HORZ = true;
+			let VERT = false;
+			let START_X = 236;
+			let START_Y = 8;
+			let NONE = 0;
+			let UP = 1;
+			let DOWN = 2;
+			let LEFT= 3; 
+			let RIGHT = 4;
+			let EMPTY = 45;
+			do setCursor(0,0);		
+			//let currentColor = true;
+
+			return this;
+		}
+	/**
+		 Initializes the game and contains the game loop.
+	*/
+	method void run() {
+		var char inp;
+		var boolean victory;
+		let victory = false;	
+		let board = Presets.get(num);
+		do drawBoard();	
+		do drawCursor(false);
+		while ((~(inp = 113)) & (~(inp = 81)) & (~(victory))) { // check that q hasn't been pressed 
+																														// and that the puzzle hasn't been solved yet
+			let inp = 0;	
+			// receive input from user
+			while (inp = 0) {
+				let inp =  Keyboard.keyPressed();
+			}
+			do drawCursor(true);
+			//do Output.println();
+			// update location of cursor
+			//if ((inp = 119) | (inp = 87)) {// 'w' (up)
+			if (inp = 131) {// up
+				if (~(cursorI=0))	{
+					do setCursor(cursorI-1,cursorJ);	
+				}
+			}
+			// begin checking for arrow keys
+			if (inp = 130) { // left
+				if (cursorJ=0) {
+				}
+				else {
+					do setCursor(cursorI,cursorJ-1);
+				}
+			}
+			if (inp = 133) { // down 
+				if (~(cursorI=5)) {
+					do setCursor(cursorI+1,cursorJ);
+				}
+			}
+			if (inp = 132) {// right
+				if (~(cursorJ=5)) {
+					do setCursor(cursorI,cursorJ+1);
+				}
+			}
+			if (inp = 32) { // Space was hit
+				if (isValid(cursorI,cursorJ)) { // can move vehicle
+					do move(); 				
+				}
+			}
+			do drawCursor(false);
+			if (board.get(2,5) = 100) {	
+				//do Output.println();
+				
+				do RushHourGraphics.victory();
+				let victory = true;
+			}
+
+			
+		}	
+		do board.dispose();	
+		return;
+	}
+	/**
+		 Called when the player wishes to move to a valid location.
+		 In addition to updating the state of the board, it
+		 erases the car from the current location and redraws it in the new one.
+	*/
+	method void move() {
+		var int dir, length, newI, newJ,i,j,n;	
+		var char c;
+		var boolean isHorz, isRed;
+		let dir = getDir(cursorI, cursorJ);
+		let length = 2;
+		let isHorz = true;
+		let isRed = false;
+		let newI = cursorI;
+		let newJ = cursorJ;
+		let i = cursorI;
+		let j = cursorJ;
+		let c = board.get(cursorI, cursorJ);
+		let n = 0;
+	
+		if ((c = 114) | (c = 100)) { // red car
+			let isRed = true;
+		}
+		if (dir = LEFT) {
+			let c = board.get(cursorI, cursorJ + 1);
+			if (c = 42) { // * => a truck
+				let length = 3;
+			}
+  		while (n < length ) {
+				do board.set(cursorI,cursorJ-1+n,board.get(cursorI,cursorJ+n));
+			  let n = n+1;
+			}
+			do board.set(cursorI,cursorJ+length-1,EMPTY);				
+			do setCursor(cursorI,cursorJ-1);
+			let newJ = newJ - 1;
+		} 
+		if (dir = RIGHT) {				
+			let c = board.get(cursorI, cursorJ - 1);
+			let j = j-1;
+			if (c = 42) { // * => a truck
+				let length = 3;
+				let j = j - 1;
+			}
+		 	while (n < length ) {
+				do board.set(cursorI,cursorJ+1-n,board.get(cursorI,cursorJ-n));
+				let n = n+1;
+			}
+
+			do board.set(cursorI,cursorJ-length+1,EMPTY);			
+			do setCursor(cursorI,cursorJ+1);
+			let newJ = newJ + 2 - length;
+		} 
+		if (dir = UP) {
+			let c = board.get(cursorI + 1, cursorJ);
+			let isHorz = false;
+			if (c = 42) { // * => a truck
+				let length = 3;
+			}
+			while (n < length  ) {
+				do board.set(cursorI-1+n,cursorJ,board.get(cursorI+n,cursorJ));
+				let n = n+1;
+			}
+			do board.set(cursorI+length-1,cursorJ,EMPTY);	
+			do setCursor(cursorI-1,cursorJ);
+			let newI = newI - 1;			
+		} 
+		if (dir = DOWN) {
+			let c = board.get(cursorI - 1, cursorJ);
+		  let isHorz = false;
+			let i = i - 1;
+			if (c = 42) { // * => a truck
+				let length = 3;
+				let i = i - 1;
+			}
+ 			while (n < length) {
+				do board.set(cursorI+1-n,cursorJ,board.get(cursorI-n,cursorJ));
+				let n = n+1;
+			}
+			do board.set(cursorI+1-length,cursorJ,EMPTY);	
+			do setCursor(cursorI+1,cursorJ);			
+			let newI = newI - length + 2;
+
+		}
+
+		do drawVehicle(length,isHorz,i,j, isRed, false); // erase current vehicle
+		do drawVehicle(length,isHorz, newI, newJ, isRed, true); // draw current vehicle
+		return;
+	}
+	/** Check if moving from the current position (i,j) to the one
+			inferred  by the location of the cursor relative to the car
+			is valid. 
+	*/	
+	method boolean isValid(int i, int j) {
+		var int dir;
+		var char c;
+		let dir = getDir(i,j);
+		if ((dir = LEFT) & (j > 0)) {
+			let c = board.get(i, j-1);
+			if (c = EMPTY) {
+				return true;
+			}
+		}
+		if ((dir = RIGHT) & (j < 5)) {
+			let c = board.get(i, j+1);
+			if (c = EMPTY) {
+				return true;
+			}
+		}
+		if ((dir = UP) & (i > 0)) {
+			let c = board.get(i-1, j);
+			if (c = EMPTY) {
+				return true;
+			}
+		}
+		if ((dir = DOWN) & (i < 5)) {
+			let c = board.get(i+1, j);
+			if (c = EMPTY) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+		 Set the cursor to point to the position i,j in the board
+		 where i,j = (0...5)X(0...5), i is the row number and j is the column number
+		 of the square in the board.
+	*/
+	method void setCursor(int i, int j) {
+		let cursorI = i;
+		let cursorJ = j;
+		return;	
+			
+	}	
+	/**
+		 When the cursor is in position i,j, depending on how (and if) it is
+		 positioned relative to a vehicle, a single direction of movement 
+		 is suggested. This direction is returned as one of the constants
+		 UP, DOWN, LEFT or RIGHT.
+	*/
+  method int getDir(int i, int j) {
+		var char c;	
+		var int dir;
+		let dir = NONE;
+		// simply check what character appears in the current location on the board.
+		let c = board.get(i, j);
+		if ((c = 60) | (c = 114)) { // '<' or 'r'
+			let dir = LEFT;
+		}
+		else {if ((c = 62) | (c = 100)) { //'>' or 'd'
+			let dir = RIGHT;
+		}
+		else {if (c = 94) {// '^'
+			let dir = UP;
+		}
+		else {if (c = 118) { // 'v'
+			let dir = DOWN;
+		}
+		}}}
+		return dir;
+	} 	
+	/**
+	   draws (erases) the cursor in the current location on the board according to
+		 what appears there.
+		 if erase==true, erases. Otherwise, draws.
+
+		
+	*/
+	method void drawCursor(boolean erase) {
+		var int dir;
+	  let dir = getDir(cursorI, cursorJ);
+		do drawCrossHairs(cursorI,cursorJ,erase);
+		if (~(dir = NONE)) {
+			do drawArrowCursor(cursorI, cursorJ, dir, erase);	
+		}
+		return;
+	}	   
+  /**
+		 draws (erases) the 'crossHairs' which indicates the currently
+		 highlighted position i,j on the board.
+  */
+	method void drawCrossHairs(int cursorI,int  cursorJ,boolean  erase) {
+		do RushHourGraphics.drawCrossHairs(START_X + (40*cursorJ), START_Y + (40*cursorI),erase);
+		return;
+	}
+  /** 
+			Initial drawing of the board. Draws the gameboard and all the cars.
+  */
+	method void drawBoard() {
+		var int x,y,i,j, length, vehicle;
+		var boolean isRed, ori;
+		do Screen.clearScreen();
+		let y = 0;
+		do Screen.setColor(true);
+		while (y < 241) {			
+			do Screen.drawLine(START_X, START_Y + y,START_X + 240,START_Y + y);
+			let x = START_X + y;
+			do Screen.drawLine(x,START_Y,x,START_Y + 240);
+			let y = y + 40;		
+		}	
+
+		// draw opening of board (the "exit")
+		do Screen.drawLine(START_X + 240,START_Y + 81 ,START_X + 240, START_Y + 119);
+		do Screen.drawLine(START_X + 239,START_Y + 81 ,START_X + 239, START_Y + 119);
+
+		// draw cars
+		let i = 0;
+
+		while (i < 6) {	
+		  let j = 0;			 
+		  while (j < 6) {
+				let vehicle = board.checkVehicle(i,j);
+				if (~(vehicle = 0)) {
+			
+					let length = 2;
+					let ori = HORZ;
+					let isRed = false;
+					//if ((vehicle = board.HORZ_TRUCK) | (vehicle = board.VERT_TRUCK)) {
+  			  if ((vehicle = 3) | (vehicle = 4)) {
+			     	let length = 3;
+					}
+					//if ((vehicle = board.VERT_CAR) | (vehicle = board.VERT_TRUCK)) {
+					if ((vehicle = 2) | (vehicle = 4)) {
+						let ori = VERT;
+					}
+					//if (vehicle = board.RED) {
+					if (vehicle = 5) {
+						let isRed = true;
+					}
+					do drawVehicle(length, ori, i, j, isRed, true);	
+				} 
+				let j = j+1;
+		  }
+			let i = i +1;
+		}
+		return;
+	}
+  /**
+		 draws(erases) a small arrow according to the direction returned by the function getDir(i,j).
+		
+  */
+	method void drawArrowCursor(int i, int j, int dir, boolean erase) {
+		var boolean isHorz, isLeftOrUp;
+		let isHorz = true;
+		let isLeftOrUp = true;
+		if ( (dir = DOWN) | (dir = UP)) {
+			let isHorz = false;
+		}
+		if ( (dir = RIGHT) | (dir = DOWN)) {
+			let isLeftOrUp = false;
+		}
+		do RushHourGraphics.drawArrowCursor(START_X + (40*j), START_Y + (40*i),isHorz,isLeftOrUp,erase);
+		return;
+	}	
+	/**
+		 draws(erases) a car/truck/redCar starting in the position i,j and in the orientation indicated
+		 by isHorz. if length=3 draws a truck and otherwise draws a car. if isRed=true, draws the
+		 "red" car. 
+  */
+	method void drawVehicle(int length, boolean isHorz, int i, int j, boolean isRed, boolean color) {
+		var int x,y;
+		let x = START_X + (40*j); // transform indices to board coordinates
+		let y = START_Y + (40*i);
+
+		if (length = 2) { // draw a car
+			if (isRed) { // "special" car
+				do RushHourGraphics.drawRedCar(x, y, color);
+			}	
+	
+			else { // a regular car	
+				do RushHourGraphics.drawCar(x, y, isHorz, color);			
+		  }
+		}
+		else { // draw a truck
+			do RushHourGraphics.drawTruck(x, y, isHorz, color);
+		}
+		return;	
+	}		
+
+	method void dispose() {
+		// nothing to do
+		return;
+	}
+}

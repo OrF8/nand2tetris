@@ -1,0 +1,17 @@
+class IfLong{
+
+	method boolean nlaBal(int x, int y){
+	var int radius ,seaHeight,h;
+	if  ( ((y + radius) > (seaHeight - h)) & ((y - radius) < (seaHeight + h)) )
+		{
+		return true;	
+		}
+	
+	if  ( (( y - radius) < (seaHeight + h)) & ((y + radius) > (seaHeight - h)) )
+		{
+		return true;
+		}	
+		
+	return false;
+	}
+}

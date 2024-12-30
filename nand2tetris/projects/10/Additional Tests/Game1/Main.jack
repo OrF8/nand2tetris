@@ -1,0 +1,51 @@
+/*****************************************************************************
+ *  File  : Main.jack 	          Ex   : 9
+ * 
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias	   ID : 03498446-8
+ *
+ * This class is the main class of the jack program.
+ ******************************************************************************/
+
+/*****************************************************************************
+ * Class Main:
+ ******************************************************************************/
+
+class Main {
+
+    /** Initializes a new game and starts it. */    
+    function void main() 
+	{
+	var Opening open;
+	var int level;
+	var Sea sea;	
+	var boolean game_stat;
+	
+	let game_stat = true;
+	let level = 0;
+	while (game_stat & (level> -1))
+	{
+ 	let open = Opening.new();
+	
+	let level = open.getLevel();
+
+	do open.dispose();
+	if (level > 0)
+		{
+        	let sea = Sea.new(level);
+		let game_stat = sea.run(); //checks whether a new game was requested
+		do sea.dispose();
+		do open.dispose();
+		}
+	}
+	
+	if (level < 0)
+	{
+	do open.dispose();
+	}
+	
+	
+	return;
+	}
+}
+ 

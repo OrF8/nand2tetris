@@ -1,0 +1,128 @@
+/*****************************************************************************
+ *  File  : Ship.jack 	          Ex   : 9
+ * 
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias	   ID : 03498446-8
+ *
+ * This class represents a ship object.
+ ******************************************************************************/
+
+/*****************************************************************************
+ * Class Ship:
+ ******************************************************************************/
+class Ship
+{
+field int _x;
+field int _y;
+field int _width;
+field int _height;
+field int _speed;
+field int _bombSize;
+field int _bombSpeed;
+
+static int _left;
+static int _right;
+ /*############################################################################
+ * Constructs a new ship and inits all needed fields.
+ #############################################################################*/ 
+constructor Ship new(int x, int y, int width, int height, int speed, int bombSize, int bombSpeed)
+{
+    let _x = x;
+    let _y = y;
+    let _width = width;
+    let _height = height;
+    let _speed = speed;
+    let _bombSize = bombSize;
+    let _bombSpeed = bombSpeed;
+    let _left = 0;
+    let _right = 512;
+    return this;
+}
+
+ /*############################################################################
+ * Disposes a ship object.
+ #############################################################################*/ 
+method void dispose()
+{
+	do draw_Ship(_x,_y,false);
+	do Memory.deAlloc(this);
+	return;
+}
+
+/*############################################################################
+ *Draws a ship shape on a designated location either in white (erasing) or in
+  black (drawing).  
+#############################################################################*/ 
+method void draw_Ship(int Ax, int Ay, boolean color)
+{
+ do Screen.setColor(color);
+ if (color){
+ do Screen.drawRectangle((Ax-(_width/2)),Ay,(Ax+(_width/2)),Ay+(_height/2));
+ }
+ else{
+  do Screen.drawRectangle((Ax-(_width/2)),Ay,(Ax+(_width/2)),Ay+(_height/2)-1);
+ }
+ do Screen.drawRectangle((Ax-(_width/5)),Ay-(_height)+10,(Ax+(_width/5)),Ay+(_height/2));
+ do Screen.drawRectangle((Ax-(_width/16)+5),Ay-(_height),(Ax+(_width/16)+3),Ay-(_height)+10);
+
+ do Screen.drawLine((Ax-(_width/2)+8),Ay,(Ax-(_width/2)+8), Ay-10); 
+ do Screen.drawRectangle((Ax-(_width/2)+4),Ay-10,(Ax-(_width/2)+8),Ay-7);
+
+ return;
+}
+
+/*############################################################################
+ A draw method, written in order to supply a unified interface for all 
+ drwable objects.
+ #############################################################################*/  
+method void draw()
+{
+do draw_Ship(_x, _y, true);
+return;
+}
+
+/*############################################################################
+  Moves the ship along the X axis according to the player keys.
+  Direction: 1 for right, 0 for left
+ #############################################################################*/  
+method void move(int direction)
+{
+ var boolean change;
+ var int oldX;
+ let change = false;
+ let oldX = _x;
+
+ if (direction > 0)
+    {
+	if ((_x+_speed) < (_right-(_width/2)))
+	{
+      	let _x = _x + _speed;	
+	let change = true;
+        }
+    }	
+ else
+    {
+    if ((_x-_speed) > (_left+(_width/2)))
+	{	
+	let _x = _x - _speed;
+	let change = true;
+	}	
+    }	
+ if (change)
+	{
+	do draw_Ship(oldX, _y,false);
+	let change = false;
+	do draw_Ship(_x,_y,true);	
+	}
+return;
+}
+
+/*############################################################################
+  Ship shoots.
+ #############################################################################*/
+method Bomb shoot()
+{
+   return Bomb.new(_x,(_y+_height+1), _bombSize, _bombSpeed);
+}
+
+}

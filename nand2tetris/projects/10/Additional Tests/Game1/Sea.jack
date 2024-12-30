@@ -1,0 +1,420 @@
+/*****************************************************************************
+ *  File  : Sea.jack 	          Ex   : 9
+ * 
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias	   ID : 03498446-8
+ *
+ * This class represents the Sea environment constitutes of ships bombs and 
+ * submarines.The Sea object manages all the other objects in this environment 
+ * while updating the score and the submarines laps that are left.
+ ******************************************************************************/
+
+/*****************************************************************************
+ * Class Sea:
+ ******************************************************************************/
+class Sea
+{
+ field Ship _ship;
+ field Bomb _bomb;
+ field boolean _shoot;
+ field int _score;
+ field int _laps;
+ field int _sub_dir;
+
+ field Array _subs;
+ field Array _subs_location;
+ field Array _heights;
+ field int _sub_width;
+ field int _sub_height;
+ field int _num_of_subs;
+
+ field int _ship_speed;
+ field int _bomb_speed;	
+
+ /*****************************************************************************
+ * Static fields
+ ******************************************************************************/
+ static int _ship_x;
+ static int _ship_y;
+ static int _ship_width;
+ static int _ship_height;
+ static int _bomb_size;
+	
+ /*****************************************************************************
+ * Constructor - builds a new sea object and initiates all needed fields.
+ * Retrieves a level argument - deciding the level of the game.
+ ******************************************************************************/
+constructor Sea new(int level)
+ {
+	var int sub_speed;
+	var int bombSize;
+	var int height;
+	var int subLocation;
+	var int index;
+	var int direction;	
+	
+	let _num_of_subs = 3;
+	let sub_speed = 5;
+	let _ship_x = 50;
+ 	let _ship_y = 54;
+	let _ship_width = 80;
+ 	let _ship_height = 16;
+ 	let _ship_speed = 13;
+	let _bomb_size = 2;	
+	let _bomb_speed = 10;
+	let _laps = 10;
+	
+	//Deciding which level was chosen.	
+	if (level = 2)
+	{
+		let sub_speed = 8;
+		let _laps = 8;
+	}
+	
+	if (level = 3)
+	{	
+		let sub_speed = 10;
+		let _bomb_size = 1;
+		let _laps = 6;
+	}		
+        
+	//building a new ship.
+	let _ship = Ship.new(_ship_x, _ship_y, _ship_width, _ship_height, _ship_speed, _bomb_size, _bomb_speed);
+	
+	// filling the heights array with the sub's different heights.
+	let _heights = Array.new(_num_of_subs);
+	let _heights[0] = 120;
+	let _heights[1] = 170;
+	let _heights[2] = 220;
+		
+	// filling the locations arrays with the sub's starting locations.
+	let _subs_location = Array.new(_num_of_subs);
+	let _subs_location[0] = 100;
+ 	let _subs_location[1] = 430;
+ 	let _subs_location[2] = 70;
+	
+	let _sub_width = 35;
+	let _sub_height = 12;
+	let sub_speed = sub_speed + 2;
+	let direction = -1;
+	let _sub_dir = direction;
+	
+	// filling the subs array with the different.
+	let _subs = Array.new(_num_of_subs);
+	let index = 0;
+	while (index < _num_of_subs)
+	{
+	let height = _heights[index];
+	let subLocation = _subs_location[index];
+	let _subs[index] = SubMarine.new(subLocation,height,_sub_width,_sub_height,sub_speed,direction);
+   	let sub_speed = sub_speed - 2;
+	let index = index + 1;
+	let direction = Math.multiply(direction , direction);
+	}
+	
+	let _score = 0;
+	let _shoot = false;
+	return this;	
+ }
+
+/*****************************************************************************
+ * Disposes a sea object and clears the screen.
+ ******************************************************************************/
+ method void dispose()
+ {
+ 	var SubMarine sub;
+	var int index;
+	
+	do _ship.dispose();
+	
+	let index = 0;
+	while ( index < _num_of_subs)
+	{
+	let sub = _subs[index];
+	do sub.dispose();
+	let index = index + 1;
+	}
+
+	if (_shoot)
+	{
+	do _bomb.dispose();
+	}
+	
+
+	do Memory.deAlloc(this);
+	return;
+ } 
+
+/*****************************************************************************
+ * Updates the player's score on the screen.
+ ******************************************************************************/
+ method void updateScore()
+ {
+ var int i;
+ do Sys.wait(1000);
+ do Output.moveCursor(0,0);
+ do Output.printString("Score: ");
+ do Output.printInt(_score);
+ do Output.printString(" ");
+ return;
+}
+
+/*****************************************************************************
+ * Updates the laps left.
+ ******************************************************************************/
+ method void updateLaps(int laps)
+ {
+ do Output.moveCursor(1, 0);
+ do Output.printString("Laps left: ");
+ do Output.printInt(laps);
+ do Output.printString(" ");
+ 
+ return;
+}
+
+/*****************************************************************************
+ * Executing a submarine hit procedure.
+ ******************************************************************************/
+method void hitSub(int index)
+{
+ var SubMarine sub;
+ var int subLocation;
+ let sub = _subs[index];
+ let subLocation = _subs_location[index];
+ if (_bomb.inXMargine(sub.getX(), sub.getWidth()))
+	{
+		do Output.moveCursor(0,10);
+		do Output.printString("Hit!");
+		do _bomb.dispose();
+		let _shoot = false;
+		do sub.blink();
+		do Output.moveCursor(0,10);
+		do Output.printString("    ");
+		do sub.setX(subLocation);
+		do sub.swapDirections();
+		let _score = _score + index +1;
+		do updateScore();
+	}
+		
+	return;
+}
+
+/*****************************************************************************
+ * Checks whether a submarine was hit.
+ ******************************************************************************/
+ method void checkHits()
+ {
+ var SubMarine sub;  // decompose to sub methods.
+ var int height;
+ var int subLocation;
+ let sub = _subs[2];
+ let height = _heights[2];
+ if (_bomb.inYMargine(height, sub.getHeight()))
+ {
+	do hitSub(2);
+ }
+ else 
+ {
+		let sub = _subs[1];
+		let height = _heights[1];
+		if (_bomb.inYMargine(height, sub.getHeight()))
+		{
+			do hitSub(1);
+		}
+			else
+			{
+				let sub = _subs[0];
+				let height = _heights[0];
+				if (_bomb.inYMargine(height, sub.getHeight()))
+				{
+				do hitSub(0);	
+				}
+			}
+ }
+	return;	
+ }
+
+/*****************************************************************************
+ * Draws all scene details.
+ * These are all the stationary details on the scree.
+ ******************************************************************************/
+method void drawScene()
+{
+ var SubMarine sub;
+ var int index;
+ do Screen.clearScreen();
+ do updateScore();
+ do updateLaps(_laps);
+ //sun
+ do Screen.drawLine(0,62,511,62);
+ do Screen.drawCircle(480,20, 10);
+ do Screen.drawLine(480,20, 480, 37);
+ do Screen.drawLine(480,20, 480, 3);
+ do Screen.drawLine(480,20, 497, 20);
+ do Screen.drawLine(480,20, 463, 20);
+ do Screen.drawLine(480,20, 492, 32);
+ do Screen.drawLine(480,20, 492, 8);
+ do Screen.drawLine(480,20, 468, 32);
+ do Screen.drawLine(480,20, 468, 8);
+ 
+ //bush1
+ do Screen.drawLine(20, 255, 16, 250);
+ do Screen.drawLine(20, 255, 24, 250);
+ do Screen.drawLine(20, 255, 20, 250);
+ //bush2
+ do Screen.drawLine(100, 255, 96, 250);
+ do Screen.drawLine(100, 255, 104, 250);
+ do Screen.drawLine(100, 255, 100, 250);
+ //bush3
+ do Screen.drawLine(170, 255, 166, 247);
+ do Screen.drawLine(170, 255, 174, 247);
+ do Screen.drawLine(170, 255, 170, 247);
+ //bush4
+ do Screen.drawLine(250, 255, 246, 250);
+ do Screen.drawLine(250, 255, 254, 250);
+ do Screen.drawLine(250, 255, 250, 250);
+ //bush5
+ do Screen.drawLine(310, 255, 306, 242);
+ do Screen.drawLine(310, 255, 314, 242);
+ do Screen.drawLine(310, 255, 310, 242);
+
+
+ do Screen.drawLine(410, 255, 406, 250);
+ do Screen.drawLine(410, 255, 414, 250);
+ do Screen.drawLine(410, 255, 410, 250);
+
+ do Screen.drawLine(502, 255, 498, 250);
+ do Screen.drawLine(502, 255, 506, 250);
+ do Screen.drawLine(502, 255, 502, 250);
+
+ do _ship.draw();
+ let index = 0;
+
+ while (index < _num_of_subs)
+ {
+ let sub = _subs[index];
+ do sub.draw(); 
+ let index = index +1;
+ }		
+
+ return;
+}
+
+/*****************************************************************************
+ * Anounce game is over, and prompts asking for a new game.
+ ******************************************************************************/
+method boolean newGame()
+{
+ var int key;
+ do  Screen.clearScreen();
+ do Output.moveCursor(3,24);
+ do Output.printString("GAME OVER");
+ do Output.moveCursor(5,12);
+ do Output.printString("Would you like to play another game? (y/n)");
+ 
+ while(true)
+ {
+ let key = Keyboard.keyPressed();
+
+ if (key = 78)
+        {
+	do Screen.clearScreen();
+	do Output.moveCursor(10, 15);
+	do Output.printString("DIE HARD !!!  BYE BYE...");
+	do Sys.wait(3000);
+	do Screen.clearScreen();
+	return false;
+        }
+ if (key = 89)
+	{
+	return true;
+        }
+ }
+ return false;
+}
+
+/*****************************************************************************
+ * The main method that runs the game.
+ ******************************************************************************/
+ method boolean run()
+ {	
+ var boolean exit;
+ var int key;
+ var boolean exists;
+ var SubMarine sub;
+ var int index;
+ var int laps;
+ let laps = _laps;
+ let exit = false;
+ let key = 0;
+ let exists = true;
+ 
+ do drawScene(); 
+ 
+  while (~exit)
+  {
+ 	while(key = 0)
+	{
+		let index = 0;
+		while (index < _num_of_subs)
+ 		{
+		let sub = _subs[index];
+		do sub.move(); 
+		//checks whether laps limit is reached.
+		if ((index = 0) & (Math.multiply(sub.getDir(),-1) =  _sub_dir))
+		{
+		 let laps = laps - 1;
+		 do updateLaps(laps);
+	
+		 if (laps = 0)
+			{
+			return newGame();
+			}
+		let _sub_dir = Math.multiply(_sub_dir,-1);
+		}
+ 		let index = index +1;
+	 	}
+	
+		if (_shoot)
+		{
+		let exists = _bomb.move();
+		do checkHits();
+			if (~exists)
+ 			{
+			do _bomb.dispose();
+			let exists = true;
+			let _shoot = false;
+			}
+        	}	
+	
+ 	let key = Keyboard.keyPressed();
+	}
+	
+	if (key = 130)        // left arrow
+		{
+	 	do _ship.move(0);
+		}
+	if (key = 132)        // right arrow
+		{ 
+		do _ship.move(1);
+		}
+	if (key = 32)         // space char
+		{
+		if (~_shoot)
+			{
+			let _bomb = _ship.shoot();	
+			do _bomb.draw();	
+			let _shoot = true;
+			}
+		}
+	if (key = 81)         // 'q' char
+		{
+		let exit = true;
+		}
+	let key = 0;
+ }	 
+	return newGame();
+ }
+}//End of Sea.jack
+
+ 

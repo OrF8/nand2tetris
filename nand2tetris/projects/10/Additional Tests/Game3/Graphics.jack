@@ -1,0 +1,105 @@
+/**
+
+*/
+
+class Graphics {
+	
+	function void drawEmptyRect(int x1, int y1, int x2, int y2) {
+		do Screen.drawRectangle(x1, y1, x1, y2);
+		do Screen.drawRectangle(x1, y1, x2, y1);
+		do Screen.drawRectangle(x1, y2, x2, y2);
+		do Screen.drawRectangle(x2, y1, x2, y2);
+		return;
+	}
+
+	/*
+	 * x,y is the left top corner of the bounding square
+	 */
+	function void drawCar(int x, int y, boolean isHorz, boolean color) {
+		if (isHorz) {	// horizontal
+			do Screen.setColor(~color);	
+			do Screen.drawLine(x + 40,y + 11,x + 40,y + 29); // delete seperation line
+			do Screen.setColor(color);			
+			do Graphics.drawEmptyRect(x + 10, y + 10, x + 70, y + 30);
+			do Graphics.drawEmptyRect(x + 25, y + 15, x + 50, y + 25);
+								
+		}
+		else { // Vertical
+			do Screen.setColor(~color);
+			do Screen.drawLine(x + 11,y + 40,x + 29,y + 40);
+			do Screen.setColor(color);			
+			do Graphics.drawEmptyRect(x + 10, y + 10, x + 30, y + 70);
+			do Graphics.drawEmptyRect(x + 15, y + 25, x + 25, y + 50);				
+		}
+		return;	
+	}
+
+	function void drawTruck(int x, int y, boolean isHorz, boolean color) {
+		if (isHorz) {	// horizontal
+		}
+		else {
+		}
+		return;
+	}
+
+	function void drawRedCar(int x, int y, boolean color) {
+
+		return;
+	}
+
+	function void drawArrowCursor(int x, int y, boolean isHorz, boolean leftOrUp, boolean erase) {
+		var int sx, sy;//, tx1, ty1, tx2, ty2, tx3, ty3;
+		
+		do Screen.setColor(~erase);
+		if (isHorz) {
+			let sy = y + 20;
+			if (leftOrUp) { // arrow left
+				let sx = x + 2;				
+				do Screen.drawLine(sx, sy, sx + 6, sy);				
+				do Screen.drawLine(sx , sy, sx + 3, sy -3);
+				do Screen.drawLine(sx , sy, sx + 3, sy + 3);
+			   	
+			} 
+			else { // arrow right
+				let sx = x + 38;				
+				do Screen.drawLine(sx, sy, sx - 6, sy);				
+				do Screen.drawLine(sx, sy, sx - 3, sy -3);
+				do Screen.drawLine(sx, sy, sx -3, sy + 3);
+			
+			}
+		}
+		else { // a vertical arrow
+			let sx = x+20;
+			if(leftOrUp) { // arrow up
+			    let sy = y + 2;	
+			    do Screen.drawLine(sx, sy, sx , sy + 6);				
+			    do Screen.drawLine(sx , sy, sx - 3, sy + 3);
+		            do Screen.drawLine(sx , sy, sx + 3, sy + 3); 
+			}
+			else { // arow down
+			    let sy = y + 38;	
+			    do Screen.drawLine(sx, sy, sx , sy - 6);				
+			    do Screen.drawLine(sx , sy, sx - 3, sy - 3);
+		            do Screen.drawLine(sx , sy, sx + 3, sy - 3); 
+			}
+		}
+		return;
+	}	
+	
+	function void drawCrossHairs(int x, int y, boolean erase) {
+		do Screen.setColor(~erase);
+		do Screen.drawLine(x+1,y+1,x+1,y+5);
+		do Screen.drawLine(x+2,y+1,x+5,y+1);
+		do Screen.drawLine(x+39,y+1,x+35,y+1);
+		do Screen.drawLine(x+39,y+1,x+39,y+5);
+		do Screen.drawLine(x+1,y+35,x+1,y+39);
+		do Screen.drawLine(x+1,y+39,x+5,y+39);
+		do Screen.drawLine(x+39,y+35,x+39,y+39);
+		do Screen.drawLine(x+35,y+39,x+39,y+39);
+
+		
+		return;
+		
+	}
+
+}

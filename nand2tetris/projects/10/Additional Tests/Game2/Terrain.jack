@@ -1,0 +1,239 @@
+/**
+ * Class defines the terrain for the Shcorts(TM) game.
+ * The terrain is practically a vector holding the heights of each
+ * column.
+ * The terrain also "knows" how to perform explosions, and change
+ * itself accordingly, also the terrain supplies inteface for other
+ * modules to check their validitity. For example, the position of
+ * a tank object on the screen.
+ *
+ * There is also a sort of random engine in the module, see README
+ * for details.
+ *
+ * @author <a href="mailto:omyan@cs.huji.ac.il">Omer Yanai</a>
+ */
+
+
+class Terrain {
+
+    // Private fields
+    field Array heights;
+    field int random_factor;
+
+    static int rand_a, rand_b, rand_range, screen_width, screen_height;
+
+    /**
+     * Constructor
+     */
+    constructor Terrain new(){
+	let random_factor = 1;
+	let rand_range = 1000;
+	let screen_width = 511;
+	let screen_height = 200;
+	let rand_a = 7;
+	let rand_b = 371;
+	let heights = Array.new(screen_width);
+	return this;
+    }
+
+    /**
+     * Standard disposer.
+     */
+    method void dispose() {
+	do heights.dispose();
+	do Memory.deAlloc(this);
+        return;
+    }
+
+    /**
+     * Initialize the terrain, divides the terrain into four parts
+     * in the 1st and 3rd parts the chance to escalate is higher
+     * in the 2nd and 4th the higher chance is for descending.
+     */
+    method void initTerrain(){
+	var int pos, r, h;
+	let pos = 0;
+	let h = 180;
+	while (pos < 128 ){
+	    let r = pickValue();
+	    if (r < 400) { let h = h + 2; }
+	    if (r > 500) { let h = h - 3; }
+	    let h = Math.max(10, Math.min(h, screen_height));
+	    let heights[pos] = h;
+	    let pos = pos + 1;
+	}
+	while (pos < 256 ){
+	    let r = pickValue();
+	    if (r < 400) { let h = h + 4; }
+	    if (r > 500) { let h = h - 2; }
+	    let h = Math.max(10, Math.min(h, screen_height));
+	    let heights[pos] = h;
+	    let pos = pos + 1;
+	}
+	while (pos < 384 ){
+	    let r = pickValue();
+	    if (r < 400) { let h = h + 2; }
+	    if (r > 500) { let h = h - 3; }
+	    let h = Math.max(10, Math.min(h, screen_height));
+	    let heights[pos] = h;
+	    let pos = pos + 1;
+	}
+	while (pos < 513 ){
+	    let r = pickValue();
+	    if (r < 400) { let h = h + 5; }
+	    if (r > 500) { let h = h - 2; }
+	    let h = Math.max(10, Math.min(h, screen_height));
+	    let heights[pos] = h;
+	    let pos = pos + 1;
+	}
+	do draw();
+	return;
+    }
+
+    /**
+     * Draws the terrain to the screen
+     */
+    method void draw(){
+	do drawRange(0, screen_width);
+	return;
+    }
+    
+    /**
+     * Draws only a range of the terrain, used to save time.
+     */
+    method void drawRange(int from, int to){
+	do range(from, to, true);
+	return;
+    }
+
+    /**
+     * Erases only a range from the terrain
+     */
+    method void eraseRange(int from, int to){
+	do range(from, to, false);
+	return;
+    }
+
+    /**
+     * Auxilliary method, draws or erases the given range
+     */
+    method void range(int from, int to, boolean flag){
+	var int pos, x1, x2;
+	let from = Math.max(0, from);
+	let to = Math.min(screen_width, to);
+	do Screen.setColor(flag);
+	let pos = from;
+	let x2 = pos;
+	while (pos < to ){
+	    let pos = pos + 1;
+	    let x1 = x2;
+	    let x2 = pos;
+	    do Screen.drawLine(x1, heights[pos-1], x2 ,heights[pos]);
+	}
+	do pickValue();
+	return;
+    }
+	
+    /**
+     * Interface method used for indicate whether a bullet hit
+     * the ground.
+     */
+    method int collides(int coX, int coY, int nxtX, int nxtY){
+	var int y, x, sign, slope;
+	do pickValue();
+	if ( (x < 0) | (x > screen_width) ){ return -1; }
+	if (~(nxtY < heights[nxtX]) ) { return nxtX; }
+	return -1;
+    }
+
+    /**
+     * Causes explosion in the terrain.
+     * A boom is drawn, then the terrain updates its heights.
+     * The heights are evaluated using the volume of a circle
+     */
+    method void explosion(int x, int radix){
+	var int pos, bound, deltaX, deltaY, low, high, y;
+	do pickValue();
+	let y = heights[x];
+	do boom(x, y, radix);
+	let pos = Math.max(0, x-radix);
+	let bound = Math.min(x+radix, screen_width);
+	do eraseRange(pos, bound);
+	let radix = Math.multiply(radix, radix);
+	while (pos < bound){
+	    let deltaX = x - pos;
+	    let deltaY = Math.sqrt( radix - Math.multiply(deltaX, deltaX));
+	    let low = y + deltaY;
+	    let high = y - deltaY;
+	    if (high > heights[pos]){
+		let heights[pos] = heights[pos] + Math.multiply(2, deltaY);
+	    }
+	    else {
+		if (low > heights[pos]){
+		    let heights[pos] = y + deltaY;
+		}
+	    }
+	    let pos = pos + 1;
+	}
+	let heights[pos] = Math.min(heights[pos], screen_height);
+	let pos = Math.max(0, x-radix);
+	let bound = Math.min(x+radix, screen_width);
+	do drawRange(pos, bound);
+	return;
+    }
+
+    /**
+     * Used for causing the program to behave pseudo-randomally
+     */
+    method void seed(int s){
+	let random_factor = s;
+	return;
+    }
+
+    /**
+     * Returns a pseudo random number
+     */
+    method int pickValue(){
+	var int x,y;
+	let x = Math.multiply(random_factor, rand_a) + rand_b;
+	let y = Math.divide(x, rand_range);
+	let x = x - Math.multiply(y, rand_range);
+	let random_factor = random_factor + x;
+	if (random_factor > rand_range)
+	    { let random_factor = random_factor - rand_range; }
+	return x;
+    }
+
+    /**
+     * Retruns the height in a given x - column
+     */
+    method int getHeight(int x){
+	if (x < 0 | x > screen_width) { return -1; }
+	return heights[x];
+    }
+
+    /**
+     * Draws a 'boom' on the screen - a set of vanishing circles
+     */
+    method void boom(int x,int y, int radix){
+	var int i,j;
+	let j = 0;
+	if ( ~(x > 0) | ~(x < screen_width) | ~(y > 0) | ~(y < screen_height) ){
+	    return;
+	}
+	let radix = Math.min(x, radix);
+	let radix = Math.min(screen_width-x, radix);
+	let radix = Math.min(y, radix);
+	let radix = Math.min(screen_height-y, radix);
+	let j = 1;
+	while (~(j > radix)){
+	    do Screen.setColor(true);
+	    do Screen.drawCircle(x, y, j);
+	    do Screen.setColor(false);
+	    do Screen.drawCircle(x, y, j);
+	    let j = j + 1;
+	}
+	return;
+    }
+}
+	

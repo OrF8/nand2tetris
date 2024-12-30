@@ -1,0 +1,12 @@
+class EmptyIf{
+	method void main(){
+	var int i,j;
+	if( i < j ){
+		let i = i + 1;
+	}
+	else{
+		let i = j;
+	}
+	return;
+	}
+}

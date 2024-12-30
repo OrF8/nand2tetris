@@ -1,0 +1,262 @@
+/**
+ * A class represent a tank in the Shcortz(TM) game. A tank is an object
+ * awared of its position on the screen, and parameters of aiming of its
+ * cannon.
+ *
+ * @author <a href="mailto:omyan@cs.huji.ac.il">Omer Yanai & Oded Zilberberg</a>
+ */
+
+class Tank{
+
+    // inner fields
+    field int coX,coY;
+    field String name;
+    field int angle,vInitial;
+    field Trigo trigo;
+    field int life;
+    field boolean isAlive;
+      
+    /**
+     * Constructor
+     */
+    constructor Tank new(String nam,int coordinateX,int coordinateY){
+	    var int i;
+	    let coX = coordinateX;
+	    let coY = coordinateY - 5;
+	    let name = String.new(5);
+	    let i = 0;
+	    while((i < 5) & (i < nam.length())) {
+		  let name = name.appendChar(nam.charAt(i));
+		  let i = i + 1;
+	    }
+	    let angle = 90;
+	    let vInitial = 0;
+	    let trigo = Trigo.new();
+	    let life = 100;
+	    let isAlive = true;
+	    
+	    return this;
+      }
+    
+    /**
+     * Boolean accessor indicates if this tank still alive
+     */
+      method boolean alive(){
+	    return isAlive;
+      }
+
+      /**
+       * Change the liveness condition
+       */
+      method void lifeAndDeath(boolean isLife){
+	    let isAlive = isLife;
+	    return;
+      }
+      
+      /** Deallocates the object's memory. */
+      method void dispose() {
+	    do erase();
+	    do name.dispose();
+	    do Memory.deAlloc(this);
+	    return;
+      }
+
+      /** Draws the Tank on the screen. */
+      method void draw() {
+	    do Screen.setColor(true);
+	    do Screen.drawRectangle(coX - 4, coY + 1, coX + 4,coY + 5);
+	    do Screen.drawRectangle(coX - 2, coY, coX + 2,coY + 1);
+	    do drawCannon();
+	    return;
+      }
+
+      /**
+       * Draws the cannon, uses trigo to calculate angle
+       */
+      method void drawCannon(){
+	    do Screen.setColor(true);
+	    do Screen.drawLine(coX, coY, getXCannon() , getYCannon());
+	    do Screen.drawLine(coX-1, coY, getXCannon()-1 , getYCannon()); 
+	    return;
+      }
+
+      
+      /** Erases the tank from the screen. */
+      method void erase() {
+	    do Screen.setColor(false);
+	    do Screen.drawRectangle(coX - 4, coY - 5, coX + 4,coY + 5);
+
+	    do eraseCannon();
+	    return;
+      }
+
+      /** Erases the cannon from the screen. */
+      method void eraseCannon(){
+	    do Screen.setColor(false);
+	    do Screen.drawLine(coX, coY, getXCannon() , getYCannon());
+	    do Screen.drawLine(coX-1, coY, getXCannon()-1 , getYCannon());
+	    return;
+      }
+
+      /** accessor for the x coordinate */
+      method int getX(){
+	    return coX;
+      }
+
+      /** setting the y coordinate */
+      method void setY(int y){
+	    let coY = y;
+	    return;
+      }
+
+      /** the head of the cannon  X rate */
+      method int getXCannon(){
+	    var int X;
+	    let X = coX + Math.divide(Math.multiply(trigo.getCos(angle),5),1000);
+	    return X;
+      }
+
+      /** the head of the cannon Y rate */
+      method int getYCannon(){
+	    var int Y;
+	    let Y = coY - Math.divide(Math.multiply(trigo.getSin(angle),5),1000);
+	    return Y;
+      }
+
+      /** accessor for the name */
+      method String getName(){ return name; }
+
+      /** escelate the power */
+      method void powerUp(){
+	    if(vInitial < Math.divide(life,4)){
+		  let vInitial = vInitial + 1;
+		  do Screen.setColor(true);
+		  do Screen.drawRectangle(212,238,
+					  212 + Math.multiply(vInitial,4),
+					  250);
+	    }
+	    else{
+		  let vInitial =  Math.divide(life,4);
+	    }
+	    return;
+      }
+
+      /** descend the power */
+      method void powerDown(){
+	    if(vInitial > 0){
+		  let vInitial = vInitial - 1;
+		  do Screen.setColor(false);
+		  if(Math.multiply(vInitial,4) < life){
+			do Screen.drawRectangle(212 + Math.multiply(vInitial,4),
+						238,212 + life,250);
+		  }
+		  else{
+			do Screen.drawRectangle(212 + life,
+						238,212 + Math.multiply(vInitial,4),250);
+		  }
+	    }
+	    return;
+      }
+
+      /** move the cannon left angle is higherr */
+      method void aimLeft(){
+	    if(~(angle = 180)){
+		  let angle = angle + 1;
+		  do drawCannon();
+		  let angle = angle - 1;
+		  do eraseCannon();
+		  let angle = angle + 1;
+		  do drawCannon();
+	    }
+	    return;
+      }
+
+      /** move the cannon right angle is lower */
+      method void aimRight(){
+	    if(~(angle = 0)){
+		  let angle = angle - 1;
+		  do drawCannon();
+		  let angle = angle + 1;
+		  do eraseCannon();
+		  let angle = angle - 1;
+		  do drawCannon();
+	    }
+	    return;
+      }
+
+      /**
+       * indicates whether this tank is the current on focus
+       * simbols the tank with a dot.
+       */
+      method void myTurn(){
+	    var String message;
+	    do Screen.setColor(true);
+	    do Output.moveCursor(22,0);
+	    do Output.printString(name);
+	    let message = "'s turn     ";
+	    do Output.printString(message);
+	    do message.dispose();
+	    do Screen.drawRectangle(210,234,314,254);
+	    do Screen.drawCircle(coX + 8,coY + 3,1);
+	    do Screen.setColor(false);
+	    do Screen.drawRectangle(212,236,212 + life,252);
+	    do Screen.setColor(true);
+	    do Screen.drawRectangle(212,238,
+				    212 + Math.multiply(vInitial,4),
+				    250);
+	    if(vInitial > Math.divide(life,4)){
+		  let vInitial =  Math.divide(life,4);
+	    }
+	    return;
+      }
+
+      /** end the turn */
+      method void endTurn(){
+	    var String blank;
+	    do Screen.setColor(false); 
+	    do Screen.drawCircle(coX + 8,coY + 3,1);
+	    do Output.moveCursor(22,0);
+	    let blank = "            ";
+	    do Output.printString(blank);
+	    do blank.dispose();
+	    return;
+      }
+
+      /** updates the tank status - called at the end of the turn */
+      method int update(int damage,int fallDistance){
+	    let life = life - Math.multiply(damage,3);
+	    let life = life - fall(fallDistance);
+	    do draw();
+	    return life;
+      }
+
+      /** animate tank falling in case the terrain is exploded */
+      method int fall(int y){
+	    var int d;
+	    let d = 0;
+	    while(coY < (y - 5)){
+		  let coY = coY + 1;
+		  do draw();
+		  let coY = coY - 1;
+		  do erase();
+		  let coY = coY + 1;
+		  let d = d + 1;
+	    }
+	    return d;
+      }
+
+      /** shoots a bullet */
+      method Bullet shoot(int bulletSize){
+	    var Bullet bully;
+	    let bully = Bullet.new(bulletSize,getXCannon(),getYCannon(),
+				   vInitial,angle,trigo);
+	    return bully;
+      }
+
+      /** accessor for the life rate of the tank */
+      method int getLife(){
+	    return life;
+      }
+
+}
+      

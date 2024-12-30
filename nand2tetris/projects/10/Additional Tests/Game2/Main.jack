@@ -1,0 +1,18 @@
+
+
+/**
+ * The Main class initializes a new Shcortz game and starts it.
+ */
+class Main {
+
+    /** Initializes a new game and starts it. */    
+    function void main() {
+        var Shcortz game;
+
+        let game = Shcortz.new();
+        do game.run();
+	do game.dispose();
+
+        return;
+    }
+}

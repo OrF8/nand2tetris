@@ -1,0 +1,13 @@
+class Minus{
+	method int main(){
+	var int i,base,offset;
+	let i = 0;
+	let base = 1;
+	let offset = 180 - i;
+	let i = 180 + base;
+	let i = 180 / base;
+	let i = 180 * base;
+	let i = base + i + offset;
+	return i;
+	}
+}

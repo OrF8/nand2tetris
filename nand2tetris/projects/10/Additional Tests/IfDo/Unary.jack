@@ -1,0 +1,10 @@
+class Unary{
+	method int blaBla(){
+	var int i,j;
+	let j = 5;
+	let i = - 9;	
+	let i = -j;
+	let j = ~i;
+	return -j;
+	}
+}

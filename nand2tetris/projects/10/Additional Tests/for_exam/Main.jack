@@ -1,0 +1,5 @@
+class Main{
+	method void Main(){
+		do Screen.clearScrean();
+	}
+}

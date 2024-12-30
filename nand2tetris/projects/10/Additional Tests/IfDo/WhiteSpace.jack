@@ -1,0 +1,10 @@
+class WhiteSpace{
+	method	void	main	(	int		i	)	{
+	let	i = i + 1;
+	let i	=	i	+	1	;
+	return;
+	}
+
+}
+	
+			

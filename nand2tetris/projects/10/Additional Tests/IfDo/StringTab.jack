@@ -1,0 +1,8 @@
+class StringTab{
+	method void blaBla(){
+ 	var String message;
+	let message = "The \tultimate fighting game";
+	do Output.printString(message);
+	return;
+	}
+}

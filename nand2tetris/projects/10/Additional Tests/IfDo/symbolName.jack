@@ -1,0 +1,9 @@
+class symbolName {
+
+	method void doLL(boolean h){
+	var int i;
+	let i = i - 123;
+	return;
+	}	
+
+}

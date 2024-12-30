@@ -1,0 +1,9 @@
+class StringComment{
+	method void blaBla(){
+ 	var String message;
+	let message = "The //ultimate fighting game";
+	let message = "The /*ultimate fighting game";
+	do Output.printString(message);
+	return;
+	}
+}

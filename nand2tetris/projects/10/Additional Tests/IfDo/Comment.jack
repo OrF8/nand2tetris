@@ -1,0 +1,9 @@
+class Comment{
+	method void blaBla(){
+	/*  */
+	var int i , j;
+	let i = 1;/*  */
+	let i = 10;/* let j = 5; */let i = 15;//
+	return;
+	}
+}

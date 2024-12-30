@@ -1,0 +1,7 @@
+class ClassIden{
+	method void main(Unary u){
+	var int i,j;
+	var Unary c;
+	return;
+	}
+}

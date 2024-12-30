@@ -1,0 +1,193 @@
+/*****************************************************************************
+ *  File  : SubMarine.jack 	          Ex   : 9
+ * 
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias	   ID : 03498446-8
+ *
+ * This class represents a submarine object.
+ ******************************************************************************/
+
+/*****************************************************************************
+ * Class Submarine:
+ ******************************************************************************/
+class SubMarine
+{
+field int _x;
+field int _y;
+field int _width;
+field int _height;
+field int _speed;
+field int _direction;
+static int _left;
+static ont _right;
+
+/*############################################################################
+ Ctor for SubMarine, inits all the needed fields.
+#############################################################################*/  
+constructor SubMarine new(int x, int y, int width, int height, int speed, int direction)
+{
+    let _x = x;
+    let _y = y;
+    let _width = width;
+    let _height = height;
+    let _speed = speed;
+    let _left = 0;
+    let _right = 512;
+    let _direction = direction;
+    return this;
+}
+
+/*############################################################################
+ Disposes a SubMarine object.
+#############################################################################*/  
+method void dispose()
+{
+	do draw_SubMarine(_x, _y, false);
+	do Memory.deAlloc(this);
+	return;
+}
+
+/*############################################################################
+  Draws a ship submarine on a designated location either in white (erasing) or 
+  in  black (drawing).  
+#############################################################################*/
+method void draw_SubMarine(int Ax, int Ay, boolean color)
+{
+ do Screen.setColor(color);
+ do Screen.drawRectangle((Ax-(_width/2)),Ay,(Ax+(_width/2)),Ay+(_height/2));
+ 
+ do Screen.drawRectangle((Ax-(_width/25)),Ay-(_height),(Ax+(_width/25)),Ay-(_height/8)); 
+ do Screen.drawRectangle((Ax-(_width/12)),Ay-(_height),(Ax-(_width/25)),Ay-(_height)+3); 
+ return;
+}
+
+/*############################################################################
+ A draw method, written in order to supply a unified interface for all 
+ drwable objects.
+ #############################################################################*/  
+method void draw()
+{
+	do draw_SubMarine(_x, _y, true);
+	return;
+}
+
+/*############################################################################
+  Moves the submarine along the X axis.
+ #############################################################################*/  
+method void move()
+{
+ var boolean change;
+ var int oldX;
+ let oldX = _x;
+
+	if ((_direction = 1 ) & ( ((_x+_speed) > (_right-(_width/2))) | ((_x+_speed) = (_right-(_width/2))) ))
+	{
+	let _direction = -1;
+        }	
+ 
+    	if ((_direction = -1) & ( ((_x-_speed) < (_left+(_width/2))) | ((_x-_speed) = (_left+(_width/2))) ))
+	{
+	let _direction = 1;
+	}	
+    	
+	if (_direction = 1)
+	{
+	let _x = _x + _speed;
+	}
+	else
+	{
+	let _x = _x - _speed;
+	}
+	
+	do draw_SubMarine(oldX, _y, false);
+	do draw_SubMarine(_x, _y, true);	
+	
+return;    
+}
+
+/*############################################################################
+  Swap submarine's movement direction.
+ #############################################################################*/  
+method void swapDirections()
+{
+	let _direction = Math.multiply(_direction , _direction);
+	return;	
+}
+
+/*############################################################################
+  Sets the submarine's x location.
+ #############################################################################*/  
+method void setX(int Ax)
+{
+	let _x = Ax;
+	return;
+}
+
+/*############################################################################
+  Sets submarine's y location.
+ #############################################################################*/  
+method void setY(int Ay)
+{
+	let _y = Ay;
+	return;
+}
+
+/*############################################################################
+  Blinks the submarine and clearing it.
+ #############################################################################*/  
+method void blink()
+{
+var int i;
+let i = 0;
+	while (i < 5)
+	{
+		do draw_SubMarine(_x, _y, false);
+		do Sys.wait(300);
+		do draw_SubMarine(_x, _y, true);	
+		let i = i+1;
+		do Sys.wait(300);
+	}
+do draw_SubMarine(_x, _y, false);
+return;
+}
+
+/*############################################################################
+  Returns the sub's x location
+ #############################################################################*/  
+method int getX()
+{
+	return _x;
+}
+
+/*############################################################################
+  Returns the sub's y location
+ #############################################################################*/  
+method int getY()
+{
+	return _y;
+}
+
+/*############################################################################
+  Returns the sub's height.
+ #############################################################################*/  
+method int getHeight()
+{
+	return _height;
+}
+
+/*############################################################################
+  Returns the sub's width.
+ #############################################################################*/  
+method int getWidth()
+{
+	return _width;
+}
+
+/*############################################################################
+  Returns the sub's movement direction.
+ #############################################################################*/  
+method int getDir()
+{
+ return _direction;
+}
+}

@@ -1,0 +1,140 @@
+/**
+ * A class represent a bullet in the Shcortz(TM) game. 
+ * A bullet knows its current position and its next one.
+ * There are movement equations after which the bullet is taken care.
+ * these are :
+ * Vx = V0*cos(alpha)
+ * Vy = V0*sin(alpha)
+ * deltaX = t * Vx
+ * deltaY = Vy - O(t^2)
+ *
+ * These are simple kinematic equations from physics, of course under
+ * constraints of not using double values all the calculations are rounded up.
+ *
+ * @author <a href="mailto:omyan@cs.huji.ac.il">Omer Yanai & Oded Zilberberg</a>
+ */
+
+
+class Bullet{
+
+    // Private fields
+      field int size;
+
+      field int coX,coY,nextCoX,nextCoY;
+
+      field int time;
+
+      field int Vx, Vy;
+
+      /** Constructs a new bullet with a given location and size. */	
+      constructor Bullet new(int bulletSize, int coordinateX, int coordinateY,
+			     int shotVelocity, int angle,
+			     Trigo trigo){
+
+	    let coX = coordinateX;
+	    let coY = coordinateY;
+	    let size = bulletSize;
+	    let Vx = Math.divide(Math.multiply(shotVelocity,trigo.getCos(angle)), 1000);
+	    let Vy = Math.divide(Math.multiply(shotVelocity,trigo.getSin(angle)), 1000);
+	    let time = 0;
+	    let nextCoX = coX + Vx;
+	    let nextCoY = coY - Vy;
+
+	    do draw();
+
+	    return this;
+      }
+
+
+      /** Deallocates the object's memory. */
+      method void dispose() {
+	    do Memory.deAlloc(this);
+	    return;
+      }
+
+
+      /** Draws the bullet on the screen. */
+      method void draw() {
+	    do onScreen(true);
+	    return;
+      }
+
+
+      /** Erases the bullet from the screen. */
+      method void erase() {
+	    do onScreen(false);
+	    return;
+      }
+
+      /** Auxilliary method for drawing/erasing */
+      method void onScreen(boolean flag){
+	  var int rad;
+	  do Screen.setColor(flag);
+	  if ( (coX < 5) | (coX > 507) | (coY < 5) | (coY > 253) ){
+	      return;
+	  }
+	  let rad = 1;
+	  if (~flag) { let rad = 4; }
+	  do Screen.drawCircle(coX, coY, rad);
+	  return;
+      }
+
+      /** accessor for nextX */
+      method int getNextX(){
+	    return nextCoX;
+      }
+
+      /** accessor  for nextY */
+      method int getNextY(){
+	    return nextCoY;
+      }
+      /** accessor for X */
+      method int getX(){
+	    return coX;
+      }
+
+      /** accessor for Y */
+      method int getY(){
+	    return coY;
+      }
+
+      /**
+       * Single cycle step.
+       * Linear extrapulation is made for the positioning of the bullet
+       * between the current position and the next one in 3 different
+       * points, the bullet is drawn then erased to animate movement.
+       */
+      method void tock() {
+	    var int oldX, oldY, deltaX, deltaY, q, temp;
+	    let oldX = coX;
+	    let oldY = coY;
+	    let time = time + 1;
+	    let q = 2;
+	    let temp = 1;
+	    let deltaX = Math.divide(nextCoX - coX, q);
+	    let deltaY = Math.divide(nextCoY - coY, q);
+	    while (temp < (q+1) ){
+		do erase();
+		let coX = coX + deltaX;
+		let coY = coY + deltaY;
+		do draw();
+		let temp = temp + 1;
+	    }
+	    let coX = nextCoX;
+	    let coY = nextCoY;
+	    let Vy = Vy - Math.divide(Math.multiply(time, time),70); 
+	    let nextCoX = nextCoX + Vx;
+	    let nextCoY = nextCoY - Vy;
+	    return;
+      }
+
+      /** bullet is valid as long its on the x range of the screen, and not below
+	  the terrain */
+      method boolean valid(){
+	    if ( (coX < 0) | (coX > 512) | (coY > 260) ) { return false; }
+	    return true;
+      }
+
+      /** the bullet size */
+      method int size(){ return size; }
+}

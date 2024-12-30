@@ -1,0 +1,7 @@
+class PrintString{
+	method void main(){
+	do Output.printString("Written by Ilan Elias open Guy Keinan (c)");
+	do Output.printString("----------");
+	return;
+	}
+}

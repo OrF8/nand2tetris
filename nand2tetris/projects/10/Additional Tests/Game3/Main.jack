@@ -1,0 +1,208 @@
+class Main {
+	static Game game;
+
+	function void main() {		
+		do Presets.init();				
+		do Main.mainMenu();
+		do Presets.destroy();					
+		return;
+	}
+	
+	function void mainMenu() {	
+		var char ans;
+		
+		while (~(ans = 51) ) { // ! (ans=quit)
+			let ans = 0;
+			do Screen.clearScreen();
+			do Output.moveCursor(0,0);
+			do Output.printString("           Welcome to the RushHour Game");
+			do Output.println();
+			do Output.printString("          ------------------------------");
+			do Output.println();
+			do Output.printString(" please choose one of the following options:");
+			do Output.println();
+			do Output.printString("1. view game instructions");
+			do Output.println();		
+			do Output.printString("2. play game");
+			do Output.println();		
+			do Output.printString("3. quit");
+			do Output.println();		
+			do Output.printString("4. view credits");
+			do Output.println();
+			while (ans = 0) {
+				let ans = Keyboard.keyPressed();
+			}
+			if (ans = 49) {  // '1'
+				let ans = 0;
+				do Main.instructions();
+			
+				do Output.printString(" hit any key to continue");		
+
+				do Output.println();
+
+				while (ans = 0) {
+					let ans = Keyboard.keyPressed();
+				}			
+			}
+			if (ans = 50) { // '2'
+				let game = Game.new(Main.chooseGame());		
+				do game.run();
+				do game.dispose();
+				let ans = 0;
+		
+			}
+			if (ans = 52) { // '4'
+				do Main.credits();
+				let ans = 0;
+			}
+			if ( (ans = 81) | (ans = 113) ) {
+				let ans = 51;
+			}
+		}
+
+		do Screen.clearScreen();
+		do Output.printString("Thanks for playing RushHour. For comments, questions and suggestions:");
+		do Output.println();
+		do Output.printString("Sivan Golan: sivan234@cs.huji.ac.il");
+		do Output.println();
+		do Output.printString("Amir Rosenfeld: rosenfld@cs.huji.ac.il");
+		do Output.println();
+		return;
+ 	}
+	/**
+		 simply writes the instructions of the RushHour game on the screen
+	*/	
+	function void instructions() {		
+		do Screen.clearScreen();
+		do Output.moveCursor(0,0);
+		do Output.printString("----------------------------------");
+		do Output.println();
+		do Output.printString("-- RushHour Game Instructions --");
+		do Output.println();
+		do Output.printString("----------------------------------");
+		do Output.println();
+		do Output.println();
+		do Output.printString("Game description:");
+		do Output.println();
+		do Output.printString("-----------------");
+		do Output.println();
+		do Output.printString("In RushHour, there is a car stuck in a ");
+		do Output.printString("traffic jam. The goal of the game is to rearrange the cars/trucks ");
+		do Output.printString("in such a manner that will enable this specific car (you'll ");
+		do Output.printString(" know which car when you see it) to exit the board. The exit of ");
+		do Output.printString(" the board is located above the middle to the right and is ");
+		do Output.printString(" marked with a line of double width. ");
+		do Output.println();
+		do Output.println();
+		do Output.printString("Moving the cars around: " );
+		do Output.println();
+		do Output.printString("-----------------------");
+		do Output.println();
+		do Output.printString("to move a car/truck, move the cursor to one of its edges. This ");
+		do Output.printString("will cause a small arrow to appear in a certain direction. ");
+		do Output.printString("If you now hit SPACE, the car/truck will move in that direction. ");
+		do Output.printString("If a car started out vertically oriented on the board, it can only move ");
+		do Output.printString("vertically, and if it started horizontally it will be able to move only ");
+		do Output.printString("Horizontally.");
+		do Output.println();								
+		return;			
+	}
+  /**
+		 provides a level-choosing interface for the user.
+  */
+ 	function int chooseGame() {
+		var int board;
+		do Screen.clearScreen();
+		do Output.moveCursor(0,0);
+		do Output.println();
+		do Output.printString("           Welcome to the RushHour Game");
+		do Output.println();
+		do Output.printString("          ------------------------------");
+		do Output.println();
+		let board = Keyboard.readInt(" choose a board (between 1 and 12) : ");
+		while ((board < 1) | (board > 12)) {
+			do Output.println();
+			do Output.printString(" This board doesn't exist.");
+			do Output.println();
+			let board = Keyboard.readInt(" please choose a board between 1 and 12 : ");
+		}
+		return board - 1;
+	}        
+
+	function void credits() {
+		var int j;
+		let j = 0;
+		/*while (j < 80) {
+			do Output.printString("!!!!!!!!!!!!!!!!!!!!!!!!!");
+			do Output.println();
+			let j = j+1;
+		}
+		*/
+		while (j < 18) {
+			let j = j+1;
+
+			do Screen.clearScreen();
+			if ((j > 0) & (j < 19)) {
+				do Output.moveCursor(19-j,0);
+				do Output.println();
+				do Output.printString("             Credits   ");
+			}
+			if ((j > 1) & (j < 20)) {
+				do Output.moveCursor(20-j,0);                         
+				do Output.println();                
+				do Output.printString("           -----------   ");
+			}
+			if ((j > 2) & (j < 21)) {
+				do Output.moveCursor(21-j,0);
+				do Output.println();
+				do Output.printString("  RushHour - originally by Binary Arts");
+			}
+			if ((j > 3) & (j < 22)) {
+				do Output.moveCursor(22-j,0);
+				do Output.println();                  
+				do Output.printString("  Created By: Amir Rosenfeld");
+			}
+			if ((j > 4) & (j < 23)) { 
+				do Output.moveCursor(23-j,0);                        
+				do Output.println();                 
+				do Output.printString("              Sivan Golan");
+			}
+			if ((j > 5) & (j < 24)) { 
+				do Output.moveCursor(24-j,0);                        
+				do Output.println();                 
+				do Output.printString("  Graphical Administrator: Sivan Golan");
+			}
+
+			if ((j > 7) & (j < 25)) { 
+				do Output.moveCursor(25-j,0);                        
+				do Output.println();                 
+				do Output.printString("  Interface Design: Amir Rosenfeld");
+			}
+
+			if ((j > 8) & (j < 26)) { 
+				do Output.moveCursor(26-j,0);                        
+				do Output.println();                 
+				do Output.printString("  More great products soon to come from:GRASS");
+			}
+			if ((j > 9) & (j < 27)) { 					
+				do Output.moveCursor(27-j,0);                        
+				do Output.println();
+			
+				do Output.printString("  Golan and Rosenfeld Affordable Software Solutions");					
+
+			}
+			if ((j > 10) & (j < 28)) { 
+				do Output.moveCursor(28-j,0);                        
+				do Output.println();      
+				do Output.printString("  Dec. 2003 - All Rights Reserved");           
+					
+			}
+
+
+		}
+		do Sys.wait(5000);
+		return;
+	}
+		
+
+}

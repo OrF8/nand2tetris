@@ -1,0 +1,141 @@
+
+/*
+ * Class trigo is an object that upon construction inserts the values of sin
+ * (0-90 degrees) multiplied by a 1000 (we only have ints) it behaves as
+ * a psuedo-trigonometric obejcts that knows how to calculate cos/sin
+ * of angles between 0-180 degrees(psuedo because the values are multiplied
+ * by 1000).
+ */
+class Trigo{
+
+    field Array angles;
+
+    constructor Trigo new(){
+	    
+	let angles = Array.new(91);
+	let angles[0] = 0;
+	let angles[1] = 17;
+	let angles[2] = 34;
+	let angles[3] = 52;
+	let angles[4] = 69;
+	let angles[5] = 87;
+	let angles[6] = 104;
+	let angles[7] = 121;
+	let angles[8] = 139;
+	let angles[9] = 156;
+	let angles[10] = 173;
+	let angles[11] = 190;
+	let angles[12] = 207;
+	let angles[13] = 224;
+	let angles[14] = 241;
+	let angles[15] = 258;
+	let angles[16] = 275;
+	let angles[17] = 292;
+	let angles[18] = 309;
+	let angles[19] = 325;
+	let angles[20] = 342;
+	let angles[21] = 358;
+	let angles[22] = 374;
+	let angles[23] = 390;
+	let angles[24] = 406;
+	let angles[25] = 422;
+	let angles[26] = 438;
+	let angles[27] = 453;
+	let angles[28] = 469;
+	let angles[29] = 484;
+	let angles[30] = 499;
+	let angles[31] = 515;
+	let angles[32] = 529;
+	let angles[33] = 544;
+	let angles[34] = 559;
+	let angles[35] = 573;
+	let angles[36] = 587;
+	let angles[37] = 601;
+	let angles[38] = 615;
+	let angles[39] = 629;
+	let angles[40] = 642;
+	let angles[41] = 656;
+	let angles[42] = 669;
+	let angles[43] = 681;
+	let angles[44] = 694;
+	let angles[45] = 707;
+	let angles[46] = 719;
+	let angles[47] = 731;
+	let angles[48] = 743;
+	let angles[49] = 754;
+	let angles[50] = 766;
+	let angles[51] = 777;
+	let angles[52] = 788;
+	let angles[53] = 798;
+	let angles[54] = 809;
+	let angles[55] = 819;
+	let angles[56] = 829;
+	let angles[57] = 838;
+	let angles[58] = 848;
+	let angles[59] = 857;
+	let angles[60] = 866;
+	let angles[61] = 874;
+	let angles[62] = 882;
+	let angles[63] = 891;
+	let angles[64] = 898;
+	let angles[65] = 906;
+	let angles[66] = 913;
+	let angles[67] = 920;
+	let angles[68] = 927;
+	let angles[69] = 933;
+	let angles[70] = 939;
+	let angles[71] = 945;
+	let angles[72] = 951;
+	let angles[73] = 956;
+	let angles[74] = 961;
+	let angles[75] = 965;
+	let angles[76] = 970;
+	let angles[77] = 974;
+	let angles[78] = 978;
+	let angles[79] = 981;
+	let angles[80] = 984;
+	let angles[81] = 987;
+	let angles[82] = 990;
+	let angles[83] = 992;
+	let angles[84] = 994;
+	let angles[85] = 996;
+	let angles[86] = 997;
+	let angles[87] = 998;
+	let angles[88] = 999;
+	let angles[89] = 999;
+	let angles[90] = 1000;
+	return this;
+    }
+
+    /* disposes of the object (no call to dispose of the array
+     * as the program crashes on this method
+     */
+    method void dispose() { 
+	do Memory.deAlloc(this);
+	return;
+    }
+
+    /* Returns a psuedo-sin value of the angle
+     * assumes that the angle is between 0-180 degrees.
+     */
+    method int getSin(int angle){
+	if (angle > 90){
+	    let angle = 180 - angle;
+	}
+	return angles[angle];
+    }
+
+    /* Returns a psuedo-cos value of the angle
+     * assumes that the angle is between 0-180 degrees.
+     */
+    method int getCos(int angle){
+	var int sign;
+	let sign = 1;
+	if (angle>90) {
+	    let sign = -1;
+	    let angle = 180 - angle;
+	}
+	return Math.multiply(getSin(90 - angle), sign);
+    }
+}
+

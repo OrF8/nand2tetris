@@ -1,0 +1,160 @@
+/*****************************************************************************
+ *  File  : Opening.jack 	          Ex   : 9
+ * 
+ *  Login : guymail               Name : Guy Keinan        ID : 03456229-8
+ *          ilane                 Name : Ilan Elias	   ID : 03498446-8
+ *
+ * This class builds the opening screen.
+ ******************************************************************************/
+
+/*****************************************************************************
+ * Class Opening:
+ ******************************************************************************/
+class Opening
+{
+field int level;
+
+
+
+/*############################################################################
+ Constructs a new Opening object.
+#############################################################################*/
+ constructor Opening new()
+ {
+	var int aimRadius;
+	var int aimX;
+	var int aimY;
+	var int textX;
+	var int textY;
+	var int subWidth;
+	var int subHeight;
+	var int subX;
+	var int subY;
+	var int shipWidth;
+	var int shipHeight;
+	var int shipX;
+	var int shipY;
+	var int bombX;
+	var int bombY;
+	var int bombRadius;
+	let textY = 5;
+	let textX = 5;
+	let aimRadius = 15;
+	let aimX = 290;
+	let aimY = 190;
+	let subX = 300;
+	let subY = 200;
+	let subWidth = 70;
+	let subHeight = 15;
+	let shipWidth = 80;
+	let shipHeight = 16;
+	let shipX = 350;
+	let shipY = 70;
+	let bombX = 330;
+	let bombY = 120;
+	let bombRadius = 4;
+	
+	do Screen.clearScreen();
+	do Output.moveCursor(0, 25);
+	do Output.printString("Written by Ilan Elias open Guy Keinan (c)");
+
+	do Output.moveCursor(textY, textX);
+	do Output.printString("RED ALERT");
+
+	do Output.moveCursor(textY+1, textX);
+	do Output.printString("----------");
+
+	do Output.moveCursor(textY+2, textX);
+	do Output.printString("SELECT DIFFICULTY LEVEL:");
+
+	do Output.moveCursor(textY+4, textX);
+	do Output.printString("1) SAILOR  (CHICKEN !)");
+	
+	do Output.moveCursor(textY+5, textX);
+	do Output.printString("2) CAPTAIN (TRY THIS !!)");
+
+	do Output.moveCursor(textY+6, textX);
+	do Output.printString("3) ADMIRAL (PREPARE TO DIE !!!)");
+
+	do Output.moveCursor(20,0);
+	do Output.printString("Use left and right arrows for battleship movement.");
+	do Output.moveCursor(21,0);
+	do Output.printString("Use spacebar to release depth bombs.");
+	do Output.moveCursor(22,0);
+	do Output.printString("Use q to run back to mama.");
+
+	do Screen.drawCircle(aimX, aimY, aimRadius);
+	do Screen.setColor(false);
+	do Screen.drawCircle(aimX, aimY, (aimRadius-1));
+	do Screen.setColor(true);
+	do Screen.drawLine(aimX, aimY+15, aimX, aimY-15);
+	do Screen.drawLine(aimX-15, aimY, aimX+15, aimY);
+
+	do Screen.drawRectangle((subX-(subWidth/2)),subY,(subX+(subWidth/2)),subY+(subHeight/2));
+ 	do Screen.drawRectangle((subX-(subWidth/25)),subY-(subHeight),(subX+(subWidth/25)),subY-(subHeight/8)); 
+ 	do Screen.drawRectangle((subX-(subWidth/12)),subY-(subHeight),(subX-(subWidth/25)),subY-(subHeight)+3); 
+
+	do Screen.drawRectangle((shipX-(shipWidth/2)),shipY,(shipX+(shipWidth/2)),shipY+(shipHeight/2));
+	do Screen.drawRectangle((shipX-(shipWidth/5)),shipY-(shipHeight)+10,(shipX+(shipWidth/5)),shipY+(shipHeight/2));
+	do Screen.drawRectangle((shipX-(shipWidth/16)+5),shipY-(shipHeight),(shipX+(shipWidth/16)+3),shipY-(shipHeight)+10);
+ 	do Screen.drawLine((shipX-(shipWidth/2)+8),shipY,(shipX-(shipWidth/2)+8), shipY-10); 
+ 	do Screen.drawRectangle((shipX-(shipWidth/2)+4),shipY-10,(shipX-(shipWidth/2)+8),shipY-7);
+
+	do Screen.drawCircle(bombX, bombY, bombRadius);
+	do Screen.drawLine(bombX - 3, bombY, (bombX + bombRadius - 5), (bombY - bombRadius - 9));
+	do Screen.drawLine(bombX + 3, bombY, (bombX + bombRadius + 7), (bombY - bombRadius - 3));
+	do Screen.drawLine(bombX , bombY, (bombX + bombRadius ), (bombY - bombRadius - 5));
+	return this;
+ }
+
+/*############################################################################
+ Retrieves the level the player selected.
+#############################################################################*/
+method int getLevel()
+{
+  var boolean exit;
+  var int key;
+  let key = 0;
+  let exit = false;
+  
+  while (~exit)
+  {
+
+	while(key = 0)
+	{
+	let key = Keyboard.keyPressed();
+	}
+
+	if (key = 81)
+        {
+	return -1;
+	}
+	if (key = 49)
+	{
+	return 1;
+	}
+	if (key = 50)
+	{
+	return 2;
+	}
+	if (key = 51)
+	{
+	return 3;
+	}
+	let key = 0;
+   }
+ return 0;
+}
+
+/*############################################################################
+ Disposes Opening object.
+#############################################################################*/
+method void dispose()
+{
+	do Output.moveCursor(0,0);
+	do Screen.clearScreen();
+	do Memory.deAlloc(this);
+	return;
+ }
+
+}

@@ -1,0 +1,86 @@
+/**
+	 Holds compact representations of game presets for the RushHour game.
+	 These are 6X6 matrices spread to lines , coded as Strings. 
+	 The representation of objects in the game is as follows:
+	 <>		horizontal car 
+
+	 <*>   horizontal truck
+
+	 ^     vertical car
+	 v
+
+	 ^     vertical truck
+	 *
+	 v
+
+	 rd   red car
+ 
+	 -    empty block
+
+	 for example, the first level's matrix is:
+
+	 <>---^
+	 ^--^-*
+	 *rd*-v
+	 v--v--
+	 ^---<>
+	 v-<*>-		
+	
+*/
+class Presets {
+	static int NUM_PRESETS;
+	static Array presets;	
+	
+	function void init() {
+		var int i;
+		let NUM_PRESETS = 12;
+		let presets = Array.new(NUM_PRESETS);
+		// init strings
+		let i = 0;
+		while (i < NUM_PRESETS) {
+			let presets[i] = String.new(36);
+			let i = i + 1;
+		}	
+
+			
+		let presets[0] =  "S1";//"<>---^^--^-**rd*-vv--v--^---<>v-<*>-";
+		let presets[1] =  "S2";//"<>-^--<>-v^^-rd^**<>^*vv^-vv--v--<*>";
+		let presets[2] =  "S3";//"<>^-<><>v--^^rd--**<*>-vv--^<><>-v<>";
+		let presets[3] =  "S4";//"^<>^--*--*--vrdv----^<*>--v--^--<*>v";
+		let presets[4] =  "S5";//"<><>^^^-<>v*v^^rdv-v*<*>--v---<>----";
+		let presets[5] =  "S6";//"^--<*>v<>^--rd^v-^--v--*--^<>v--v<*>";
+		let presets[6] =  "S7";//"<>^^--^-v*--*rdv--v<*>-----------<*>";
+		let presets[7] =  "S8";//"-^-<*>^v-^^-vrdv*^^<*>vvv-^--^--v<>v";
+		let presets[8] =  "S9";//"^-^<*>*-v^--vrdv--<><>-^-----*<><>-v";
+		let presets[9] =  "S10";//"<>-<*>---^<>^rdv-^v-^<>*<>*--v--v<*>";
+		let presets[10] = "S11";//"^<*><>*^<>-^vvrd-*<*>^-v--^v<><>v---";
+		let presets[11] = "S12";//"^<>-^-*^^-v^vvvrd*<*>^-v--^v<><>v<>-";
+
+		return;
+	}	
+
+	function Board get(int num) {
+		var Board b;
+			
+		if (~(num < NUM_PRESETS)) { // error - return null
+			do Output.printString("Presets :: Error - attempt to access inexistant board");
+			do Output.println();
+			return null;
+
+		}
+		let b = Board.new(presets[num]);
+		return b;
+	}
+
+	function void destroy() {
+		var int i;
+		var String s;
+		let i = 0;
+		while (i < NUM_PRESETS) {
+			let s = presets[i];
+			do s.dispose();
+			let i = i + 1;
+		}
+		return;
+	}
+}
