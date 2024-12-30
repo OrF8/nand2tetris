@@ -23,12 +23,12 @@ class CompilationEngine:
         :param input_stream: The input stream.
         :param output_stream: The _output stream.
         """
-        self._tokenizer = input_stream
-        self._output = output_stream
-        self._indent_level = 0
+        self._tokenizer: JackTokenizer = input_stream
+        self._output: TextIO = output_stream
+        self._indent_level: int = 0
 
     def _write_terminal(self, token_type: str, token: str) -> None:
-        indent = "  " * self._indent_level
+        indent: str = "  " * self._indent_level
         if token_type == "symbol":
             if token == "<":
                 token = "&lt;"
@@ -39,13 +39,13 @@ class CompilationEngine:
         self._output.write(f"{indent}<{token_type}> {token} </{token_type}>\n")
 
     def _write_non_terminal_start(self, name: str) -> None:
-        indent = "  " * self._indent_level
+        indent: str = "  " * self._indent_level
         self._output.write(f"{indent}<{name}>\n")
         self._indent_level += 1
 
     def _write_non_terminal_end(self, name: str) -> None:
         self._indent_level -= 1
-        indent = "  " * self._indent_level
+        indent: str = "  " * self._indent_level
         self._output.write(f"{indent}</{name}>\n")
 
     def compile_class(self) -> None:
