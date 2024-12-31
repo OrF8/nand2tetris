@@ -11,6 +11,13 @@ from typing import TextIO
 from CompilationEngine import CompilationEngine
 from JackTokenizer import JackTokenizer
 
+DESIRED_INPUT_LENGTH: int = 2
+WRONG_INPUT_LENGTH_MESSAGE: str = "Invalid usage, please use: JackAnalyzer <input path>"
+INPUT_EXTENSION: str = ".jack"
+OUTPUT_EXTENSION: str = ".xml"
+OPEN_AS_READ: str = 'r'
+OPEN_AS_WRITE: str = 'w'
+
 
 def analyze_file(in_file: TextIO, out_file: TextIO) -> None:
     """
@@ -30,8 +37,8 @@ if __name__ == "__main__":
     # Both are closed automatically when the code finishes running.
     # If the _output file does not exist, it is created automatically in the
     # correct path, using the correct filename.
-    if not len(sys.argv) == 2:
-        sys.exit("Invalid usage, please use: JackAnalyzer <input path>")
+    if not len(sys.argv) == DESIRED_INPUT_LENGTH:
+        sys.exit(WRONG_INPUT_LENGTH_MESSAGE)
     argument_path = os.path.abspath(sys.argv[1])
     if os.path.isdir(argument_path):
         files_to_assemble = [
@@ -41,9 +48,9 @@ if __name__ == "__main__":
         files_to_assemble = [argument_path]
     for input_path in files_to_assemble:
         filename, extension = os.path.splitext(input_path)
-        if extension.lower() != ".jack":
+        if extension.lower() != INPUT_EXTENSION:
             continue
-        output_path = filename + ".xml"
-        with open(input_path, 'r') as input_file, \
-                open(output_path, 'w') as output_file:
+        output_path = filename + OUTPUT_EXTENSION
+        with open(input_path, OPEN_AS_READ) as input_file, \
+                open(output_path, OPEN_AS_WRITE) as output_file:
             analyze_file(input_file, output_file)

@@ -94,6 +94,23 @@ class JackTokenizer:
     Note that ^, # correspond to shiftleft and shiftright, respectively.
     """
 
+    _TOKEN_SPECIFICATION: List[Tuple[str, str]] = [
+        ('COMMENT', r'//.*|/\*[\s\S]*?\*/|/\*\*[\s\S]*?\*/'),
+        ('keyword', r'\b(class|constructor|function|method|field|static|var|int|char|boolean|void|true|false|null'
+                    r'|this|let|do|if|else|while|return)\b'),
+        ('symbol', r'[{}()\[\].,;+\-*/&|<>=~^#]'),
+        ('integerConstant', r'\b\d+\b'),
+        ('stringConstant', r'"[^"\n]*"'),
+        ('identifier', r'\b[a-zA-Z_]\w*\b'),
+        ('SKIP', r'[ \t\n]+')
+    ]
+    _STARTING_TOKEN: Tuple[str, str] = ('', '')
+    _STARTING_TOKEN_INDEX: int = -1
+    _TOK_REGEX: str = '|'.join(f'(?P<{pair[0]}>{pair[1]})' for pair in _TOKEN_SPECIFICATION)
+    _SKIP_KINDS: List[str] = ['SKIP', 'COMMENT']
+    _STRING_CONST: str = 'stringConstant'
+    _INT_CONST: str = 'integerConstant'
+
     def __init__(self, input_stream: TextIO) -> None:
         """
         Opens the input stream and gets ready to tokenize it.
@@ -103,9 +120,9 @@ class JackTokenizer:
         # Your code goes here!
         # A good place to start is to read all the lines of the input:
         # input_lines = input_stream.read().splitlines()
-        self._current_token: Tuple[str, Union[str, int]] = ('', '')
+        self._current_token: Tuple[str, Union[str, int]] = self._STARTING_TOKEN
         self._tokens: List[Tuple[str, Union[str, int]]] = []
-        self._current_token_index: int = -1
+        self._current_token_index: int = self._STARTING_TOKEN_INDEX
         self._tokenize(input_stream.read())
 
     def _tokenize(self, input_data: str) -> None:
@@ -113,25 +130,14 @@ class JackTokenizer:
         Tokenizes the input data and stores the _tokens in self._tokens.
         :param input_data: The input data to tokenize.
         """
-        token_specification = [
-            ('COMMENT', r'//.*|/\*[\s\S]*?\*/|/\*\*[\s\S]*?\*/'),
-            ('keyword', r'\b(class|constructor|function|method|field|static|var|int|char|boolean|void|true|false|null'
-                        r'|this|let|do|if|else|while|return)\b'),
-            ('symbol', r'[{}()\[\].,;+\-*/&|<>=~^#]'),
-            ('integerConstant', r'\b\d+\b'),
-            ('stringConstant', r'"[^"\n]*"'),
-            ('identifier', r'\b[a-zA-Z_]\w*\b'),
-            ('SKIP', r'[ \t\n]+')
-        ]
-        tok_regex = '|'.join(f'(?P<{pair[0]}>{pair[1]})' for pair in token_specification)
-        for mo in re.finditer(tok_regex, input_data):
+        for mo in re.finditer(self._TOK_REGEX, input_data):
             kind = mo.lastgroup
             value = mo.group()
-            if kind == 'SKIP' or kind == 'COMMENT':
+            if kind in self._SKIP_KINDS:
                 continue
-            elif kind == 'stringConstant':
+            elif kind == self._STRING_CONST:
                 value = value[1:-1]
-            elif kind == 'integerConstant':
+            elif kind == self._INT_CONST:
                 value = int(value)
             self._tokens.append((kind, value))
 
@@ -163,6 +169,6 @@ class JackTokenizer:
     def token(self) -> str:
         """
         :return: The type of the current token, can be:
-                 "KEYWORD", "SYMBOL", "IDENTIFIER", "INT_CONST", "STRING_CONST"
+                 "KEYWORD", "SYMBOL", "IDENTIFIER", "INT_CONST", "_STRING_CONST"
         """
         return self._current_token[0]
