@@ -160,66 +160,9 @@ class JackTokenizer:
         """
         return self._current_token[1]
 
-    def peek(self) -> Tuple[str, Union[str, int]]:
-        """
-        :return: The next token in the input, without advancing.
-        """
-        if self._current_token_index < len(self._tokens) - 1:
-            return self._tokens[self._current_token_index + 1]
-        return '', ''
-
     def token(self) -> str:
         """
         :return: The type of the current token, can be:
                  "KEYWORD", "SYMBOL", "IDENTIFIER", "INT_CONST", "STRING_CONST"
         """
         return self._current_token[0]
-
-    def keyword(self) -> str:
-        """
-        :return: The keyword which is the current token.
-                 Should be called only when token_type() is "KEYWORD".
-                 Can return "CLASS", "METHOD", "FUNCTION", "CONSTRUCTOR", "INT",
-                 "BOOLEAN", "CHAR", "VOID", "VAR", "STATIC", "FIELD", "LET", "DO",
-                 "IF", "ELSE", "WHILE", "RETURN", "TRUE", "FALSE", "NULL", "THIS"
-        """
-        return self._current_token[1]
-
-    def symbol(self) -> str:
-        """
-        :return: str: the character which is the current token.
-                 Should be called only when token_type() is "SYMBOL".
-                 Recall that symbol was defined in the grammar like so:
-                 symbol: '{' | '}' | '(' | ')' | '[' | ']' | '.' | ',' | ';' | '+' |
-                 '-' | '*' | '/' | '&' | '|' | '<' | '>' | '=' | '~' | '^' | '#'
-        """
-        return self._current_token[1]
-
-    def identifier(self) -> str:
-        """
-        :return: str: the identifier which is the current token.
-                 Should be called only when token_type() is "IDENTIFIER".
-                 Recall that identifiers were defined in the grammar like so:
-                 identifier: A sequence of letters, digits, and underscore ('_') not
-                 starting with a digit. You can assume keywords cannot be
-                 identifiers, so 'self' cannot be an identifier, etc.
-        """
-        return self._current_token[1]
-
-    def int_val(self) -> int:
-        """
-        :return: str: the integer value of the current token.
-                 Should be called only when token_type() is "INT_CONST".
-                 Recall that integerConstant was defined in the grammar like so:
-                 integerConstant: A decimal number in the range 0-32767.
-        """
-        return self._current_token[1]
-
-    def string_val(self) -> str:
-        """
-        :return: str: the string value of the current token, without the double
-                 quotes. Should be called only when token_type() is "STRING_CONST".
-                 Recall that StringConstant was defined in the grammar like so:
-                 StringConstant: '"' A sequence of Unicode characters not including double quote or newline '"'
-        """
-        return self._current_token[1]
