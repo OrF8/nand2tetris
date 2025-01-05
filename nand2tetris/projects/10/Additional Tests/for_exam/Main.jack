@@ -1,5 +1,5 @@
 class Main{
 	method void Main(){
-		do Screen.clearScrean();
+		do Screen.clearScreen();
 	}
 }

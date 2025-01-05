@@ -17,7 +17,7 @@
           <keyword> do </keyword>
           <identifier> Screen </identifier>
           <symbol> . </symbol>
-          <identifier> clearScrean </identifier>
+          <identifier> clearScreen </identifier>
           <symbol> ( </symbol>
           <expressionList>
           </expressionList>
