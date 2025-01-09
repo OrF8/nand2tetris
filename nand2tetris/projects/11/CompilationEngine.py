@@ -244,7 +244,9 @@ class CompilationEngine:
             if self._symbol_table.kind_of(orig_name) is not None:
                 # It is a method called on an object
                 class_name: str = self._symbol_table.type_of(orig_name)
-                self._vm_writer.write_push(self._symbol_table.kind_of(orig_name), self._symbol_table.index_of(orig_name))
+                self._vm_writer.write_push(
+                    self._symbol_table.kind_of(orig_name), self._symbol_table.index_of(orig_name)
+                )
                 start_value += 1
             name = f"{orig_name if class_name is None else class_name}{self._DOT}{self._tokenizer.value()}"
             self._tokenizer.advance()
