@@ -739,12 +739,12 @@ call Output.printString 1
 pop temp 0
 push constant 0
 return
-function Main.double 0
+function Main.double 1
 push argument 0
 push constant 2
 call Math.multiply 2
 return
-function Main.fill 0
+function Main.fill 2
 label WHILE_EXP0
 push argument 1
 push constant 0
