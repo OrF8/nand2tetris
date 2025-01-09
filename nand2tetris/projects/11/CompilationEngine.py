@@ -53,7 +53,7 @@ class CompilationEngine:
     _PRE_TERM_CONSTANT_LIST: List[str] = [_UNARY_MINUS, _NEGATION]
     _LEFT_PARENTHESIS: str = "("
     _DOT: str = "."
-    _START_OF_SUBROUTINE_CALL: List[str] = ["(", _DOT]
+    _START_OF_SUBROUTINE_CALL: List[str] = [_LEFT_PARENTHESIS, _DOT]
     _RIGHT_PARENTHESIS: str = ")"
     _COMMA: str = ","
     _ENDER: str = ";"
@@ -241,14 +241,13 @@ class CompilationEngine:
         self._tokenizer.advance()
         if self._tokenizer.value() == self._DOT:
             self._tokenizer.advance()
-            if self._symbol_table.kind_of(orig_name) is not None:
-                # It is a method called on an object
+            if self._symbol_table.kind_of(orig_name):  # i.e., is not none.  # If it is a method called on an object
                 class_name: str = self._symbol_table.type_of(orig_name)
                 self._vm_writer.write_push(
                     self._symbol_table.kind_of(orig_name), self._symbol_table.index_of(orig_name)
                 )
                 start_value += 1
-            name = f"{orig_name if class_name is None else class_name}{self._DOT}{self._tokenizer.value()}"
+            name = f"{class_name or orig_name}{self._DOT}{self._tokenizer.value()}"
             self._tokenizer.advance()
         else:
             if class_name is None:
@@ -269,7 +268,7 @@ class CompilationEngine:
         self._tokenizer.advance()
         name = self._tokenizer.value()
         self._tokenizer.advance()
-        if self._tokenizer.value() == self._START_OF_EXPRESSION_INDEXING:
+        if self._tokenizer.value() == self._START_OF_EXPRESSION_INDEXING:  # Array indexing
             # ---Handle the array indexing---
             self._tokenizer.advance()  # Skip '['
             self._compile_expression()  # Compute the index (i)
@@ -277,11 +276,13 @@ class CompilationEngine:
             # Push the base address of the array
             self._vm_writer.write_push(self._symbol_table.kind_of(name), self._symbol_table.index_of(name))
             self._vm_writer.write_arithmetic(self._ADD_COMMAND)  # Add the index to the base address
-            self._vm_writer.write_pop(self._POINTER_SEGMENT, 1)  # Save the computed address in `that` (pointer 1)
             # ---Handle the value to assign---
             self._tokenizer.advance()  # Skip '='
             self._compile_expression()  # Compile the value to assign
-            self._vm_writer.write_pop(self._THAT_SEGMENT, 0)  # Assign the value to `that 0`
+            self._vm_writer.write_pop(self._TEMP_SEGMENT, 0)  # Assign the value to temp 0
+            self._vm_writer.write_pop(self._POINTER_SEGMENT, 1)  # Save the computed address in `that` (pointer 1)
+            self._vm_writer.write_push(self._TEMP_SEGMENT, 0)  # Push the value to temp 0
+            self._vm_writer.write_pop(self._THAT_SEGMENT, 0)  # Assign the value to `that 0` (array)
         else:
             self._tokenizer.advance()  # Skip '='
             self._compile_expression()
@@ -382,8 +383,8 @@ class CompilationEngine:
                 self._vm_writer.write_push(self._POINTER_SEGMENT, 0)
             else:
                 self._vm_writer.write_push(self._CONST_SEGMENT, 0)
-            if self._tokenizer.value() == self._TRUE_STRING:
-                self._vm_writer.write_arithmetic(self._NOT_COMMAND)
+                if self._tokenizer.value() == self._TRUE_STRING:
+                    self._vm_writer.write_arithmetic(self._NOT_COMMAND)
             self._tokenizer.advance()
         elif self._tokenizer.value() in self._PRE_TERM_CONSTANT_LIST:
             op: str = self._tokenizer.value()
@@ -391,9 +392,9 @@ class CompilationEngine:
             self._compile_term()
             self._vm_writer.write_arithmetic(self._NEGATION if op == self._UNARY_MINUS else self._NOT_COMMAND)
         elif self._tokenizer.value() == self._LEFT_PARENTHESIS:
-            self._tokenizer.advance()
+            self._tokenizer.advance()  # Skip '('
             self._compile_expression()
-            self._tokenizer.advance()
+            self._tokenizer.advance()  # Skip ')'
         else:
             name: str = self._tokenizer.value()
             self._tokenizer.advance()
