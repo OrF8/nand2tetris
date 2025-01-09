@@ -53,6 +53,8 @@ class Main {
         do Output.printString("Test 5: expected result: 110; actual result: ");
         do Output.printInt(b[1]);
         do Output.println();
+        do Output.println();
+        do Output.printString("========Finished tests!========");
         return;
     }
     

@@ -35,10 +35,14 @@ class SymbolTable:
             self._VAR: 0
         }
 
-    def start_subroutine(self) -> None:
-        """Starts a new subroutine scope (i.e., resets the subroutine's symbol table)."""
+    def start_subroutine(self, is_method: bool) -> None:
+        """
+        Starts a new subroutine scope (i.e., resets the subroutine's symbol table).
+
+        :param is_method: True if the subroutine is a method, False otherwise.
+        """
         self._subroutine_scope = {}
-        self.indexes[self._ARG] = 0
+        self.indexes[self._ARG] = 1 if is_method else 0
         self.indexes[self._VAR] = 0
 
     def define(self, name: str, identifier_type: str, kind: str) -> None:

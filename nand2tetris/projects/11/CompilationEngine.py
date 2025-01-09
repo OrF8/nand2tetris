@@ -131,8 +131,9 @@ class CompilationEngine:
         You can assume that classes with constructors have at least one field,
         you will understand why this is necessary in project 11.
         """
-        self._symbol_table.start_subroutine()
         subroutine_type = self._tokenizer.value()
+        is_method: bool = subroutine_type == self._METHOD_DEC
+        self._symbol_table.start_subroutine(is_method)
         self._is_constructor = subroutine_type == self._CONSTRUCTOR_DEC
         self._tokenizer.advance()
         self._tokenizer.advance()  # Skip the return type
@@ -149,7 +150,7 @@ class CompilationEngine:
             self._vm_writer.write_push(self._CONST_SEGMENT, self._symbol_table.var_count(self._FIELD_DEC))
             self._vm_writer.write_call(self._MEMORY_ALLOCATOR, 1)
             self._vm_writer.write_pop(self._POINTER_SEGMENT, 0)
-        elif subroutine_type == self._METHOD_DEC:
+        elif is_method:
             self._vm_writer.write_function(
                 f"{self._class_name}{self._DOT}{subroutine_name}", self._symbol_table.var_count(self._VAR_TOKEN)
             )
@@ -228,14 +229,15 @@ class CompilationEngine:
         self._vm_writer.write_pop(self._TEMP_SEGMENT, 0)
         self._tokenizer.advance()  # Skip ';'
 
-    def _compile_subroutine_call(self, class_name: str = None) -> None:
+    def _compile_subroutine_call(self, class_name: str = None, starting_value: int = 0) -> None:
         """
         Compiles a subroutine call (subroutineName | (className | varName).subroutineName).
 
         :param class_name: The class name the subroutine belongs to.
+        :param starting_value: The starting value of the number of arguments.
         """
-        orig_name = name = self._tokenizer.value()
-        start_value: int = 0
+        orig_name = self._tokenizer.value()
+        start_value: int = starting_value
         self._tokenizer.advance()
         if self._tokenizer.value() == self._DOT:
             self._tokenizer.advance()
@@ -258,7 +260,7 @@ class CompilationEngine:
         self._tokenizer.advance()  # Skip '('
         n_args = self._compile_expression_list(start_value)
         self._vm_writer.write_call(name, n_args)
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip ')'
 
     def _compile_let(self) -> None:
         """Compiles a let statement."""
@@ -346,7 +348,7 @@ class CompilationEngine:
         """Compiles an expression."""
         self._compile_term()
         while self._tokenizer.value() in self._SYMBOLS_LIST:
-            op = self._tokenizer.value()
+            op: str = self._tokenizer.value()
             self._tokenizer.advance()
             self._compile_term()
             self._vm_writer.write_arithmetic(op)
@@ -382,7 +384,7 @@ class CompilationEngine:
                 self._vm_writer.write_arithmetic(self._NOT_COMMAND)
             self._tokenizer.advance()
         elif self._tokenizer.value() in self._PRE_TERM_CONSTANT_LIST:
-            op = self._tokenizer.value()
+            op: str = self._tokenizer.value()
             self._tokenizer.advance()
             self._compile_term()
             self._vm_writer.write_arithmetic(self._NEGATION if op == self._UNARY_MINUS else self._NOT_COMMAND)
@@ -391,7 +393,7 @@ class CompilationEngine:
             self._compile_expression()
             self._tokenizer.advance()
         else:
-            name = self._tokenizer.value()
+            name: str = self._tokenizer.value()
             self._tokenizer.advance()
             if self._tokenizer.value() == self._START_OF_EXPRESSION_INDEXING:
                 # ---Handle the array indexing---
@@ -405,8 +407,13 @@ class CompilationEngine:
                 self._vm_writer.write_pop(self._POINTER_SEGMENT, 1)
                 self._vm_writer.write_push(self._THAT_SEGMENT, 0)  # Push the value of the array element
             elif self._tokenizer.value() in self._START_OF_SUBROUTINE_CALL:
+                start_value: int = 0
+                if (kind := self._symbol_table.kind_of(name)) is not None:
+                    self._vm_writer.write_push(kind, self._symbol_table.index_of(name))
+                    name = name[0].upper() + name[1:]
+                    start_value += 1
                 self._tokenizer.advance()  # Skip '(' or '.'
-                self._compile_subroutine_call(name)
+                self._compile_subroutine_call(name, start_value)
             else:
                 self._vm_writer.write_push(self._symbol_table.kind_of(name), self._symbol_table.index_of(name))
 
