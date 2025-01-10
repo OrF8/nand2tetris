@@ -6,3 +6,6 @@
 *.hdl linguist-language=HDL
 *.tst linguist-language=TestScript
 *.jack linguist-language=Jack
+*.html linguist-language=HTML
+*.xml linguist-language=XML
+*.iml linguist-language=XML
