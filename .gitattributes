@@ -4,4 +4,5 @@
 *.py linguist-language=Python
 *.asm linguist-language=Assembly
 *.hdl linguist-language=HDL
-*.tst linguist-language=TestScripts
+*.tst linguist-language=TestScript
+*.jack linguist-language=Jack
