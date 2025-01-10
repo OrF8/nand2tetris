@@ -1,0 +1,16 @@
+// puts the first 10 fibonacci elements in memory 5000-5010
+class Main {
+	function void main() {
+		var int i, x, y;
+		let i = 2;
+		do Memory.poke(5000,1);
+		do Memory.poke(5001,1);
+		while(i < 11) {
+			let x = Memory.peek(5000 + i - 2);
+			let y = Memory.peek(5000 + i - 1);
+			do Memory.poke(5000 + i, x + y);
+			let i = i + 1;
+		}
+		return;
+	}
+}

@@ -1,0 +1,13 @@
+function Stata.init 0
+push constant 1
+pop static 0
+push constant 0
+return
+function Stata.setVal 1
+push argument 0
+pop static 0
+push constant 0
+return
+function Stata.getVal 0
+push static 0
+return

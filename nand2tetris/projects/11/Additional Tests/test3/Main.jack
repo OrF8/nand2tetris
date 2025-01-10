@@ -1,0 +1,21 @@
+// check many push / pops
+class Main {
+	function void main() {
+		var int a, b, c, d, e, f;
+		var int aa, ba, ca, da, ea, fa;
+		let a = 1;
+		let b = 2;
+		let c = 3;
+		let d = 4;
+		let e = 5;
+		let f = 6;
+
+		let aa = a + b + c + d + e + f; // 21
+		let ba = (a * b) + (c * d) + (e * f); // 44
+		let ca = ((f / b) + (e / a)) / b; // 4
+		do Memory.poke(5000,aa);
+		do Memory.poke(5001,ba);
+		do Memory.poke(5002,ca);
+		return;
+	}
+}

@@ -1,0 +1,46 @@
+function Main.main 0
+call Stata.init 0
+pop temp 0
+call Statb.init 0
+pop temp 0
+push constant 5
+call Main.f 1
+pop temp 0
+push constant 0
+return
+function Main.f 1
+push constant 0
+call Main.dump 1
+pop temp 0
+push argument 0
+call Stata.setVal 1
+pop temp 0
+push argument 0
+push argument 0
+add
+call Statb.setVal 1
+pop temp 0
+push constant 10
+call Main.dump 1
+pop temp 0
+push constant 0
+return
+function Main.dump 4
+call Stata.getVal 0
+pop local 0
+call Statb.getVal 0
+pop local 1
+push constant 5000
+push argument 0
+add
+push local 0
+call Memory.poke 2
+pop temp 0
+push constant 5001
+push argument 0
+add
+push local 1
+call Memory.poke 2
+pop temp 0
+push constant 0
+return

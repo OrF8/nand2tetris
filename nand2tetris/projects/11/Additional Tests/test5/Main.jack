@@ -1,0 +1,16 @@
+/**
+ * Checking variable frames.
+ **/
+class Main{
+  function void main(){
+    var T a;
+    var int i;
+    let a = T.new(5);
+    do a.doNothing(7);
+    do Memory.poke(5000,a.getX());
+    let i = a.doNothing2(10);
+    do Memory.poke(5001,a.getX());
+    do Memory.poke(5002,i);
+    return;
+  }
+}

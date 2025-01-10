@@ -33,20 +33,7 @@ class CompilationEngine:
     _STATEMENTS_LIST: List[str] = [_LET_TOKEN, _IF_TOKEN, _WHILE_TOKEN, _DO_TOKEN, _RETURN_TOKEN]
     _START_OF_EXPRESSION_INDEXING: str = "["
     _ELSE_STATEMENT: str = "else"
-    _PLUS: str = "+"
-    _MINUS: str = "-"
-    _MULTIPLY: str = "*"
-    _DIVIDE: str = "/"
-    _AND: str = "&"
-    _OR: str = "|"
-    _LESS_THAN: str = "<"
-    _GREATER_THAN: str = ">"
-    _EQUAL: str = "="
-    _LEFT_SHIFT: str = "^"
-    _RIGHT_SHIFT: str = "#"
-    _SYMBOLS_LIST: List[str] = [
-        _PLUS, _MINUS, _MULTIPLY, _DIVIDE, _AND, _OR, _LESS_THAN, _GREATER_THAN, _EQUAL, _LEFT_SHIFT, _RIGHT_SHIFT
-    ]
+    _SYMBOLS_LIST: List[str] = ["+", "-", "*", "/", "&", "|", "<", ">", "=", "^", "#"]
     _CONSTANT_LIST: List[str] = ["true", "false", "null", "this"]
     _NEGATION: str = "~"
     _UNARY_MINUS: str = "-"
@@ -74,7 +61,6 @@ class CompilationEngine:
     _WHILE_LABEL_END: str = "WHILE_END"
     _IF_LABEL_START: str = "IF_TRUE"
     _IF_LABEL_END: str = "IF_FALSE"
-    _IDENTIFIER_TOKEN: str = "identifier"
     _THIS_STRING: str = "this"
 
     def __init__(self, input_stream: JackTokenizer, output_stream: TextIO) -> None:
@@ -113,13 +99,13 @@ class CompilationEngine:
         Compiles a class variable declaration.
         """
         kind = self._tokenizer.value()
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip the kind
         var_type = self._tokenizer.value()
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip the type
         while True:
             name = self._tokenizer.value()
             self._symbol_table.define(name, var_type, kind)
-            self._tokenizer.advance()
+            self._tokenizer.advance()  # Skip the name
             if self._tokenizer.value() == self._ENDER:
                 break
             self._tokenizer.advance()  # Skip ','
@@ -135,13 +121,13 @@ class CompilationEngine:
         is_method: bool = subroutine_type == self._METHOD_DEC
         self._symbol_table.start_subroutine(is_method)
         self._is_constructor = subroutine_type == self._CONSTRUCTOR_DEC
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip the subroutine type
         self._tokenizer.advance()  # Skip the return type
         subroutine_name = self._tokenizer.value()
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip the subroutine name
         self._tokenizer.advance()  # Skip '('
         n_locals = self._compile_parameter_list()
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip ')'
         self._tokenizer.advance()  # Skip '{'
         while self._tokenizer.value() == self._VAR_TOKEN:
             n_locals += self._compile_var_dec()
@@ -171,10 +157,10 @@ class CompilationEngine:
         if self._tokenizer.value() != self._RIGHT_PARENTHESIS:
             n_locals += 1
             var_type = self._tokenizer.value()
-            self._tokenizer.advance()
+            self._tokenizer.advance()  # Skip the type
             name = self._tokenizer.value()
             self._symbol_table.define(name, var_type, self._ARGUMENT_SEGMENT)
-            self._tokenizer.advance()
+            self._tokenizer.advance()  # Skip the name
             while self._tokenizer.value() == self._COMMA:
                 n_locals += 1
                 self._tokenizer.advance()  # Skip ','
@@ -224,7 +210,7 @@ class CompilationEngine:
 
     def _compile_do(self) -> None:
         """Compiles a do statement."""
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip 'do'
         self._compile_subroutine_call()
         self._vm_writer.write_pop(self._TEMP_SEGMENT, 0)
         self._tokenizer.advance()  # Skip ';'
@@ -248,7 +234,7 @@ class CompilationEngine:
                 )
                 start_value += 1
             name = f"{class_name or orig_name}{self._DOT}{self._tokenizer.value()}"
-            self._tokenizer.advance()
+            self._tokenizer.advance()  # Skip the subroutine name
         else:
             if class_name is None:
                 # It is a method called on this object
@@ -265,9 +251,9 @@ class CompilationEngine:
 
     def _compile_let(self) -> None:
         """Compiles a let statement."""
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip 'let'
         name = self._tokenizer.value()
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip the name
         if self._tokenizer.value() == self._START_OF_EXPRESSION_INDEXING:  # Array indexing
             # ---Handle the array indexing---
             self._tokenizer.advance()  # Skip '['
@@ -309,7 +295,7 @@ class CompilationEngine:
 
     def _compile_return(self) -> None:
         """Compiles a return statement."""
-        self._tokenizer.advance()
+        self._tokenizer.advance()  # Skip 'return'
         if self._is_constructor:
             self._vm_writer.write_push(self._POINTER_SEGMENT, 0)
             self._tokenizer.advance()  # Skip 'this'
@@ -385,7 +371,7 @@ class CompilationEngine:
                 self._vm_writer.write_push(self._CONST_SEGMENT, 0)
                 if self._tokenizer.value() == self._TRUE_STRING:
                     self._vm_writer.write_arithmetic(self._NOT_COMMAND)
-            self._tokenizer.advance()
+            self._tokenizer.advance()  # Skip the constant
         elif self._tokenizer.value() in self._PRE_TERM_CONSTANT_LIST:
             op: str = self._tokenizer.value()
             self._tokenizer.advance()
@@ -413,7 +399,7 @@ class CompilationEngine:
                 start_value: int = 0
                 if (kind := self._symbol_table.kind_of(name)) is not None:
                     self._vm_writer.write_push(kind, self._symbol_table.index_of(name))
-                    name = name[0].upper() + name[1:]
+                    name = self._symbol_table.type_of(name)
                     start_value += 1
                 self._tokenizer.advance()  # Skip '(' or '.'
                 self._compile_subroutine_call(name, start_value)

@@ -1,0 +1,27 @@
+function Main.main 2
+push constant 0
+pop local 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 0
+push constant 10
+lt
+not
+if-goto WHILE_END0
+push local 0
+push constant 1
+add
+pop local 0
+push local 1
+push local 0
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push constant 5000
+push local 1
+call Memory.poke 2
+pop temp 0
+push constant 0
+return

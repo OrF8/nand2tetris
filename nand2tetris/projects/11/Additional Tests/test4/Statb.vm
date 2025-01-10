@@ -1,0 +1,13 @@
+function Statb.init 0
+push constant 2
+pop static 0
+push constant 0
+return
+function Statb.setVal 1
+push argument 0
+pop static 0
+push constant 0
+return
+function Statb.getVal 0
+push static 0
+return

@@ -1,0 +1,24 @@
+class T{
+  field int _x;
+  constructor T new(int x){
+    let _x = x;
+    return this;
+  }
+
+  method void doNothing(int _x){
+    var int y;
+    let y = _x;
+    let _x = y;
+    return;
+  }
+
+  method int doNothing2(int y){
+    var int _x;
+    let _x = ~(_x + y+3);
+    return _x; 
+  }
+  
+  method int getX(){
+    return _x;
+  }
+}

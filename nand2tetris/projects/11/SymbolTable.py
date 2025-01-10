@@ -23,6 +23,7 @@ class SymbolTable:
     _TYPE = "type"
     _KIND = "kind"
     _INDEX = "index"
+    _THIS = "this"
 
     def __init__(self) -> None:
         """Creates a new empty symbol table."""
@@ -83,6 +84,8 @@ class SymbolTable:
         :return: The kind of the named identifier in the current scope,
                  or None if the identifier is unknown in the current scope.
         """
+        if name == self._THIS:
+            return self._FIELD
         if name in self._subroutine_scope:
             return self._subroutine_scope[name][self._KIND]
         if name in self._class_scope:
@@ -105,6 +108,8 @@ class SymbolTable:
         :param name: The name of an identifier.
         :return: The index assigned to the named identifier.
         """
+        if name == self._THIS:
+            return 0
         if name in self._subroutine_scope:
             return self._subroutine_scope[name][self._INDEX]
         if name in self._class_scope:

@@ -1,0 +1,14 @@
+// computes 1+2+...+10, writes it at memory 5000
+class Main {
+	function void main() {
+		var int i, n;
+		let i = 0;
+		let n = 0;
+		while(i < 10) {
+			let i = i + 1;
+			let n = n + i;
+		}
+		do Memory.poke(5000,n);
+		return;
+	}
+}

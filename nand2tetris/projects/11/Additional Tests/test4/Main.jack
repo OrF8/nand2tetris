@@ -1,0 +1,25 @@
+class Main {
+	function void main() {
+		do Stata.init();
+		do Statb.init();
+		do Main.f(5);
+		return;
+	}
+
+	function void f(int a) {
+		do Main.dump(0);
+		do Stata.setVal(a);
+		do Statb.setVal(a + a);
+		do Main.dump(10);
+		return;
+	}
+
+	function void dump(int ref) {
+		var int s1, s2, r1;
+		let s1 = Stata.getVal();
+		let s2 = Statb.getVal();
+		do Memory.poke(5000 + ref, s1);
+		do Memory.poke(5001 + ref, s2);
+		return;
+	}
+}

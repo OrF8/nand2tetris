@@ -1,0 +1,61 @@
+function Main.main 12
+push constant 1
+pop local 0
+push constant 2
+pop local 1
+push constant 3
+pop local 2
+push constant 4
+pop local 3
+push constant 5
+pop local 4
+push constant 6
+pop local 5
+push local 0
+push local 1
+add
+push local 2
+add
+push local 3
+add
+push local 4
+add
+push local 5
+add
+pop local 6
+push local 0
+push local 1
+call Math.multiply 2
+push local 2
+push local 3
+call Math.multiply 2
+add
+push local 4
+push local 5
+call Math.multiply 2
+add
+pop local 7
+push local 5
+push local 1
+call Math.divide 2
+push local 4
+push local 0
+call Math.divide 2
+add
+push local 1
+call Math.divide 2
+pop local 8
+push constant 5000
+push local 6
+call Memory.poke 2
+pop temp 0
+push constant 5001
+push local 7
+call Memory.poke 2
+pop temp 0
+push constant 5002
+push local 8
+call Memory.poke 2
+pop temp 0
+push constant 0
+return

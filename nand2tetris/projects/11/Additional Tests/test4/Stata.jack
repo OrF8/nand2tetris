@@ -1,0 +1,17 @@
+class Stata {
+	static int val;
+
+	function void init() {
+		let val = 1;
+		return;
+	}
+
+	function void setVal(int v) {
+		let val = v;
+		return;
+	}
+
+	function int getVal() {
+		return val;
+	}	
+}
