@@ -21,9 +21,8 @@ class CompilationEngine:
     _FIELD_DEC: str = "field"
     _VAR_DECS: List[str] = ["static", _FIELD_DEC]
     _METHOD_DEC: str = "method"
-    _FUNCTION_DEC: str = "function"
     _CONSTRUCTOR_DEC: str = "constructor"
-    _SUBROUTINE_DECS: List[str] = [_CONSTRUCTOR_DEC, _FUNCTION_DEC, _METHOD_DEC]
+    _SUBROUTINE_DECS: List[str] = [_CONSTRUCTOR_DEC, "function", _METHOD_DEC]
     _VAR_TOKEN: str = "var"
     _LET_TOKEN: str = "let"
     _IF_TOKEN: str = "if"
