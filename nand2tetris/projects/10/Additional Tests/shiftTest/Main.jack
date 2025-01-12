@@ -1,0 +1,31 @@
+/**
+ * Tests the shift command.
+ */
+class Main {
+
+    /* You pass the test if the output is:
+     * 1
+     * 2
+     * 1
+     * =====Finished Test!=====
+     */
+
+
+    function void main() {
+        var int i;
+
+        let i = 1;
+        do Output.printInt(i);
+        do Output.println();
+        let i = ^i; // Perform a logical shift left by 1
+        do Output.printInt(i);
+        do Output.println();
+        let i = #i;  // Perform a logical shift right by 1
+        do Output.printInt(i);
+        do Output.println();
+        do Output.println();
+        do Output.printString("=====Finished Test!=====");
+        return;
+    }
+
+}

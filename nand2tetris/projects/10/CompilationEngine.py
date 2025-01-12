@@ -49,7 +49,7 @@ class CompilationEngine:
     _SYMBOLS_LIST: List[str] = ["+", "-", "*", "/", "&", "|", "<", ">", "="]
     _TERM_HEADER: str = "term"
     _CONSTANT_LIST: List[str] = ["true", "false", "null", "this"]
-    _PRE_TERM_CONSTANT_LIST: List[str] = ["-", "~"]
+    _PRE_TERM_CONSTANT_LIST: List[str] = ["-", "~", "^", "#"]
     _LEFT_PARENTHESIS: str = "("
     _DOT: str = "."
     _START_OF_SUBROUTINE_CALL: List[str] = ["(", _DOT]
