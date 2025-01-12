@@ -17,6 +17,7 @@ INPUT_EXTENSION: str = ".jack"
 OUTPUT_EXTENSION: str = ".vm"
 OPEN_AS_READ: str = 'r'
 OPEN_AS_WRITE: str = 'w'
+RUNNING = "__main__"
 
 
 def compile_file(in_file: TextIO, out_file: TextIO) -> None:
@@ -31,7 +32,7 @@ def compile_file(in_file: TextIO, out_file: TextIO) -> None:
     engine.compile_class()
 
 
-if "__main__" == __name__:
+if __name__ == RUNNING:
     # Parses the input path and calls compile_file on each input file.
     # This opens both the input and the output files!
     # Both are closed automatically when the code finishes running.
