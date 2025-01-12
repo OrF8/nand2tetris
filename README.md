@@ -24,3 +24,6 @@ A repository for the projects in course 67925 (Computer Cons. Workshop: From Nan
 
 ### Project 8 Grade
 99.5
+
+### Project 10 Grade
+97.54
