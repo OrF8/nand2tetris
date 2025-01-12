@@ -33,8 +33,8 @@ class VMWriter:
         ">": "gt",
         "=": "eq",
         "~": "neg",
-        "^": "shiftLeft",
-        "#": "shiftRight"
+        "^": "shiftleft",
+        "#": "shiftright"
     }
     _SEGMENT_SWITCHER: Dict[str, str] = {
         "var": "local",
