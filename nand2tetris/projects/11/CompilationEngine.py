@@ -6,7 +6,7 @@ as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
 Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 """
 
-from typing import TextIO, List
+from typing import TextIO, List, Dict
 from JackTokenizer import JackTokenizer
 from VMWriter import VMWriter
 from SymbolTable import SymbolTable
@@ -36,7 +36,15 @@ class CompilationEngine:
     _CONSTANT_LIST: List[str] = ["true", "false", "null", "this"]
     _NEGATION: str = "~"
     _UNARY_MINUS: str = "-"
-    _PRE_TERM_CONSTANT_LIST: List[str] = [_UNARY_MINUS, _NEGATION]
+    _SHIFT_LEFT: str = "^"
+    _SHIFT_RIGHT: str = "#"
+    _PRE_TERM_CONSTANT_LIST: List[str] = [_UNARY_MINUS, _NEGATION, _SHIFT_LEFT, _SHIFT_RIGHT]
+    _PRE_TERM_SWITCHER: Dict[str, str] = {
+        _NEGATION: "not",
+        _UNARY_MINUS: "neg",
+        _SHIFT_LEFT: "shiftleft",
+        _SHIFT_RIGHT: "shiftright"
+    }
     _LEFT_PARENTHESIS: str = "("
     _DOT: str = "."
     _START_OF_SUBROUTINE_CALL: List[str] = [_LEFT_PARENTHESIS, _DOT]
@@ -375,7 +383,7 @@ class CompilationEngine:
             op: str = self._tokenizer.value()
             self._tokenizer.advance()
             self._compile_term()
-            self._vm_writer.write_arithmetic(self._NEGATION if op == self._UNARY_MINUS else self._NOT_COMMAND)
+            self._vm_writer.write_arithmetic(self._PRE_TERM_SWITCHER[op])
         elif self._tokenizer.value() == self._LEFT_PARENTHESIS:
             self._tokenizer.advance()  # Skip '('
             self._compile_expression()

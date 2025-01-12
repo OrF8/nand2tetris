@@ -29,7 +29,7 @@ class SymbolTable:
         """Creates a new empty symbol table."""
         self._class_scope: Dict[str, Dict[str, Union[str, int]]] = {}
         self._subroutine_scope: Dict[str, Dict[str, Union[str, int]]] = {}
-        self.indexes: Dict[str, int] = {
+        self._indexes: Dict[str, int] = {
             self._STATIC: 0,
             self._FIELD: 0,
             self._ARG: 0,
@@ -43,8 +43,8 @@ class SymbolTable:
         :param is_method: True if the subroutine is a method, False otherwise.
         """
         self._subroutine_scope = {}
-        self.indexes[self._ARG] = 1 if is_method else 0
-        self.indexes[self._VAR] = 0
+        self._indexes[self._ARG] = 1 if is_method else 0
+        self._indexes[self._VAR] = 0
 
     def define(self, name: str, identifier_type: str, kind: str) -> None:
         """
@@ -60,15 +60,15 @@ class SymbolTable:
             self._class_scope[name] = {
                 self._TYPE: identifier_type,
                 self._KIND: kind,
-                self._INDEX: self.indexes[kind]
+                self._INDEX: self._indexes[kind]
             }
         else:
             self._subroutine_scope[name] = {
                 self._TYPE: identifier_type,
                 self._KIND: kind,
-                self._INDEX: self.indexes[kind]
+                self._INDEX: self._indexes[kind]
             }
-        self.indexes[kind] += 1
+        self._indexes[kind] += 1
 
     def var_count(self, kind: str) -> int:
         """
