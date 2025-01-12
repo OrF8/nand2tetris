@@ -12,6 +12,12 @@ from typing import TextIO
 from CompilationEngine import CompilationEngine
 from JackTokenizer import JackTokenizer
 
+ERROR_MESSAGE: str = "Invalid usage, please use: JackCompiler <input path>"
+INPUT_EXTENSION: str = ".jack"
+OUTPUT_EXTENSION: str = ".vm"
+OPEN_AS_READ: str = 'r'
+OPEN_AS_WRITE: str = 'w'
+
 
 def compile_file(in_file: TextIO, out_file: TextIO) -> None:
     """
@@ -32,7 +38,7 @@ if "__main__" == __name__:
     # If the output file does not exist, it is created automatically in the
     # correct path, using the correct filename.
     if not len(sys.argv) == 2:
-        sys.exit("Invalid usage, please use: JackCompiler <input path>")
+        sys.exit(ERROR_MESSAGE)
     argument_path = os.path.abspath(sys.argv[1])
     if os.path.isdir(argument_path):
         files_to_assemble = [
@@ -42,8 +48,8 @@ if "__main__" == __name__:
         files_to_assemble = [argument_path]
     for input_path in files_to_assemble:
         filename, extension = os.path.splitext(input_path)
-        if extension.lower() != ".jack":
+        if extension.lower() != INPUT_EXTENSION:
             continue
-        output_path = filename + ".vm"
-        with open(input_path, 'r') as input_file, open(output_path, 'w') as output_file:
+        output_path = filename + OUTPUT_EXTENSION
+        with open(input_path, OPEN_AS_READ) as input_file, open(output_path, OPEN_AS_WRITE) as output_file:
             compile_file(input_file, output_file)
