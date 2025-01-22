@@ -1,0 +1,48 @@
+/** Contains math utility functions. */
+class MathUtils {
+    
+    /** Returns a % b. */
+    function int mod(int a, int b) {
+        var int x;
+        var int remainder;
+
+        let x = Math.divide(a, b);
+        let remainder = a - (x * b);
+
+        return remainder;
+    }
+
+    /** Returns the number of digits in a given number. */
+    function int numLength(int number) {
+        var int i;
+
+        if (number = 0) {
+            return 1;
+        }
+        
+        let i = 0;
+        while (number > 0) {
+            let number = Math.divide(number, 10);
+            let i = i + 1;
+        }
+        return i;
+    }
+
+    /** Returns the reversed number, for example: 123 -> [3, 2, 1] */
+    function Array reverseNumber(int number, int length) {
+        var Array reversedNumber;
+        var int i;
+        var int remainder;
+        let reversedNumber = Array.new(length);
+        let i = 0;
+        while (number > 0) {
+            let remainder = MathUtils.mod(number, 10);
+            let reversedNumber[i] = remainder;
+            let i = i + 1;
+            let number = Math.divide(number, 10);
+        }
+
+        return reversedNumber;
+    }
+
+}

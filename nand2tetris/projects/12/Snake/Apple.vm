@@ -1,0 +1,181 @@
+function Apple.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push constant 216
+pop this 0
+push constant 104
+pop this 1
+push constant 4
+pop this 2
+push constant 0
+pop this 4
+push constant 10
+call Array.new 1
+pop this 3
+push constant 0
+push this 3
+add
+push this 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push this 3
+add
+push this 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push this 3
+add
+push constant 232
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push this 3
+add
+push constant 136
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+push this 3
+add
+push constant 168
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 5
+push this 3
+add
+push constant 184
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 6
+push this 3
+add
+push constant 200
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 7
+push this 3
+add
+push constant 152
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 8
+push this 3
+add
+push constant 376
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 9
+push this 3
+add
+push constant 104
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push pointer 0
+call Apple.draw 1
+pop temp 0
+push pointer 0
+return
+function Apple.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Apple.getX 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Apple.getY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Apple.getRadius 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Apple.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+return
+function Apple.erase 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+return
+function Apple.createNew 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Apple.erase 1
+pop temp 0
+push this 4
+push constant 2
+add
+push constant 10
+call MathUtils.mod 2
+pop this 4
+push this 4
+push this 3
+add
+pop pointer 1
+push that 0
+pop this 0
+push this 4
+push constant 1
+add
+push this 3
+add
+pop pointer 1
+push that 0
+pop this 1
+push pointer 0
+call Apple.draw 1
+pop temp 0
+push constant 0
+return

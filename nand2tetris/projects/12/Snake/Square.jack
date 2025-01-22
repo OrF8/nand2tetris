@@ -1,0 +1,67 @@
+/**
+ * Represents a square on the screen.
+ * Each square is a node in a linked list.
+ * The linked list is used to represent the snake.
+ */
+class Square {
+
+   field int x; // screen x location of the square's top-left corner
+   field int y; // screen y location of the square's top-left corner
+   field int size; // length of this square, in pixels
+   field Border border; // border in which the square is moving
+   field int speed; // the speed of the square
+   field Square next; // the next square in the linked list
+
+   /** Constructs a new square with a given location, size, border and next. */
+   constructor Square new(int Ax, int Ay, int Asize, Border Aborder, Square Anext) {
+      let size = Asize;
+      let border = Aborder;
+      let x = Ax;
+      let y = Ay;
+      let speed = 2;
+      let next = Anext;
+      return this;
+   }
+
+   /** Sets the next square in the linked list. */
+   method void setNext(Square Anext) {
+      let next = Anext;
+      return;
+   }
+
+   /** Returns the next square in the linked list. */
+   method Square getNext() {
+      return next;
+   }
+
+   /** Returns the x coordinate of this square. */
+   method int getX() {
+      return x;
+   }
+
+   /** Returns the y coordinate of this square. */
+   method int getY() {
+      return y;
+   }
+
+   /** Disposes this square. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the square on the screen. */
+   method void draw() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+
+   /** Erases the square from the screen. */
+   method void erase() {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+
+}

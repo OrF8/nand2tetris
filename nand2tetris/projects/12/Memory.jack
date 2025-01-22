@@ -1,0 +1,115 @@
+// This file is part of nand2tetris, as taught in The Hebrew University, and
+// was written by Aviv Yaish. It is an extension to the specifications given
+// [here](https://www.nand2tetris.org) (Shimon Schocken and Noam Nisan, 2017),
+// as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
+// Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+
+    static Array memory;
+    static int base, max, length, nextNode, endOfList;
+
+    /**
+     * Initializes the class.
+     */
+    function void init() {
+        let memory = 0;
+        let base = 2048;
+        let max = 16384;
+        let length = base;
+        let nextNode = base + 1;
+        let endOfList = -1;
+        let memory[length] = max - base;
+        let memory[nextNode] = endOfList;
+        return;
+    }
+
+    /**
+     * Returns the RAM value at the given address.
+     */
+    function int peek(int address) {
+        return memory[address];
+    }
+
+    /**
+     * Sets the RAM value at the given address to the given value.
+     */
+    function void poke(int address, int value) {
+        let memory[address] = value;
+        return;
+    }
+
+    /**
+     * Finds an available RAM block of the given size and returns a reference to its base address. Assume size > 0.
+     */
+    function int alloc(int size) {
+        var int currNode;
+        var int prevNode;
+        var int next;
+        var int returnAddress;
+        if (size < 1) {
+            do Sys.error(5); // Allocated memory size must be positive
+        }
+        let prevNode = length;
+        let currNode = length;
+        let next = nextNode;
+        let returnAddress = -1;
+        while (~(memory[currNode] > size) & ~(memory[next] = endOfList)) {
+        	let prevNode = currNode;
+        	let currNode = memory[next];
+        	let next = memory[next + 1];
+        }
+        if (next = endOfList) {
+            do Sys.error(6); // Heap overflow
+        } else { //found free block in the middle of the list
+        	if (currNode < (size + 3)) {
+        		let memory[prevNode + 1] = memory[currNode + 1];
+        		let memory[currNode] = size + 1;
+        		let returnAddress = currNode + 1;
+        	} else {
+        		let memory[currNode] = memory[currNode] - size - 1;
+        		let returnAddress = currNode + memory[currNode];
+        		let memory[returnAddress - 1] = size + 1;
+        	}
+        }
+        return returnAddress;
+    }
+
+    /**
+     * De-allocates the given object (cast as an array) by making it available for future allocations.
+     */
+    function void deAlloc(Array o) {
+        let memory[o] = memory[o - 1];
+        let memory[o + 1] = memory[length + 1];
+        let memory[length + 1] = o;
+        return;
+    }    
+
+    /**
+     * Returns the maximal element contained in the given Array/object.
+     * Assume inputs are initialized and contain at least one element.
+     */
+    function int max(Array o) {
+        var int size, i, currentValue, maxValue, endAddress;
+        // Get the size of the allocated block (it's stored at memory[o - 1])
+        let size = memory[o - 1] - 1; // subtract 1 to account for the stored size
+        let maxValue = memory[o]; // Initialize the max value with the first element in the array
+        let i = o + 1;
+        let endAddress = o + size - 1;
+        while ((i < endAddress) | (i = endAddress)) {
+            let currentValue = memory[i];
+            if (currentValue > maxValue) {
+                let maxValue = currentValue;
+            }
+            let i = i + 1;
+        }
+        return maxValue;
+    }
+
+}

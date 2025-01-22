@@ -1,0 +1,186 @@
+// This file is part of nand2tetris, as taught in The Hebrew University, and
+// was written by Aviv Yaish. It is an extension to the specifications given
+// [here](https://www.nand2tetris.org) (Shimon Schocken and Noam Nisan, 2017),
+// as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
+// Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+/**
+ * Represents character strings. In addition for constructing and disposing
+ * strings, the class features methods for getting and setting individual
+ * characters of the string, for erasing the string's last character,
+ * for appending a character to the string's end, and more typical
+ * string-oriented operations.
+ */
+class String {
+
+    field Array str;
+    field int length;
+    field int maxLength;
+
+    /**
+     * constructs a new empty string with a maximum length of maxLength and initial length of 0.
+     */
+    constructor String new(int maxLength_) {
+        if (maxLength < 0) {
+            do Sys.error(14); // Maximum length must be non-negative
+        }
+        if (maxLength_ = 0) {
+            let maxLength_ = 1;
+        }
+        let str = Array.new(maxLength_);
+        let length = 0;
+        let maxLength = maxLength_;
+        return this;
+    }
+
+    /**
+     * Disposes this string.
+     */
+    method void dispose() {
+        do str.dispose();
+        return;
+    }
+
+    /**
+     * Returns the current length of this string.
+     */
+    method int length() {
+        return length;
+    }
+
+    /**
+     * Returns the character at the i-th location of this string.
+     */
+    method char charAt(int i) {
+        if (i < 0 | i > length) {
+            do Sys.error(15); // String index out of bounds
+        }
+        return str[i];
+    }
+
+    /**
+     * Sets the character at the i-th location of this string to c.
+     */
+    method void setCharAt(int i, char c) {
+        if (i < 0 | i > length) {
+            do Sys.error(16); // String index out of bounds
+        }
+        let str[i] = c;
+        return;
+    }
+
+    /**
+     * Appends c to this string's end and returns this string.
+     */
+    method String appendChar(char c) {
+        if (length < maxLength) {
+            let str[length] = c;
+            let length = length + 1;
+        } else {
+            do Sys.error(17); // String is full
+        }
+        return this;
+    }
+
+    /**
+     * Erases the last character from this string.
+     */
+    method void eraseLastChar() {
+        if (length > 0) {
+            let length = length - 1;
+        } else {
+            do Sys.error(18); // String is empty
+        }
+        return;
+    }
+
+    /**
+     * Returns the integer value of this string, until a non-digit character is detected.
+     */
+    method int intValue() {
+        var int val;
+        var int d;
+        var int i;
+        var boolean isNeg;
+        let val = 0;
+        let i = 0;
+        if ((length > 0) & (str[0] = 45)) { // If string starts with '-'
+            let isNeg = true;
+            let i = 1;
+        } else {
+            let isNeg = false;
+            let i = 0;
+        }
+        while (i < length) {
+            if (str[i] > 47 & str[i] < 58) { // If character is a digit
+                let d = str[i] - 48; // ASCII value of '0'
+                let val = (val * 10) + d;
+            }
+            let i = i + 1;
+        }
+        if (isNeg) {
+            return -val;
+        } else {
+            return val;
+        }
+    }
+
+    /**
+     * Sets this string to hold a representation of the given value.
+     */
+    method void setInt(int val) {
+        let length = 0;
+        if (val < 0) {
+            let val = -val;
+        	do appendChar(45); //add leading '-'
+        }
+        do setIntHelper(val);
+        return;
+    }
+
+    /**
+     * Helper function for setInt.
+     * Recursively sets this string to hold a representation of the given value.
+     */
+    method void setIntHelper(int val) {
+    	var int currentChar;
+    	var int div;
+    	let div = val / 10;
+    	let currentChar = val - (div * 10) + 48;
+    	if (val < 10) {
+    	    if (length + 1 > maxLength) {
+    	        do Sys.error(19); // Insufficient string capacity
+    	    }
+    		do appendChar(currentChar);
+    	} else {
+    		do setIntHelper(div);
+    		if (length + 1 > maxLength) {
+                do Sys.error(19); // Insufficient string capacity
+            }
+    		do appendChar(currentChar);
+    	}
+    	return;
+    }
+
+    /**
+     * Returns the new line character.
+     */
+    function char newLine() {
+        return 128;
+    }
+
+    /**
+     * Returns the backspace character.
+     */
+    function char backSpace() {
+        return 129;
+    }
+
+    /**
+     * Returns the double quote (") character.
+     */
+    function char doubleQuote() {
+        return 34;
+    }
+
+}

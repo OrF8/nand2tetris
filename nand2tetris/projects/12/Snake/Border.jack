@@ -1,0 +1,66 @@
+/** Implements the borders in which ghosty can move. */
+class Border {
+	
+	// fields
+	field int x; // top-left corner x coordinate
+	field int y; // top-left corner y coordinate
+	field int width; // border width
+	field int height; // border height
+	field int thickness; // border thickness
+
+	/** Constructor - constructs borders */
+	constructor Border new(int Ax, int Ay, int Awidth, int Aheight, int Athickness) {
+		let x = Ax;
+		let y = Ay;
+		let width = Awidth;
+		let height = Aheight;
+		let thickness = Athickness;
+		if (x > 510) {
+			do Sys.error(1); // out of bounds
+		}
+		if (y > 254) {
+			do Sys.error(1); // out of bounds
+		}
+		return this;
+	}
+
+	/** Disposes this border. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+	/** Draws 4 lines on the screen to create a border for the main character */
+	method void draw(){
+		do Screen.setColor(true);
+		// Top border
+        do Screen.drawRectangle(x, y, x + width, y + thickness);
+        // Right border
+        do Screen.drawRectangle(x + width, y, x + width + thickness, y + height);
+        // Bottom border
+        do Screen.drawRectangle(x, y + height, x + width + thickness, y + height + thickness);
+        // Left border
+        do Screen.drawRectangle(x, y, x + thickness, y + height);
+        return;
+	}
+
+	/** Get the left border place in the screen */
+	method int getLeftBorder() {
+		return (x + thickness);
+	}
+
+	/** Get the right border place in the screen */
+	method int getRightBorder() {
+		return (x + width);
+	}
+
+	/** Get the top border place in the screen */
+	method int getTopBorder() {
+		return (y + thickness);
+	}
+
+	/** Get the bottom border place in the screen */
+	method int getBottomBorder() {
+		return (y + height);
+	}
+}

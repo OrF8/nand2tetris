@@ -1,0 +1,185 @@
+/**
+ * A snake is a collection of squares that move around the screen.
+ * The snake is controlled by the player. The snake can move in four directions: up, down, left, and right.
+ * The snake can only move in one direction at a time.
+ */
+class Snake {
+
+    field Square head;
+    field Square tail;
+    field int size;
+    field Border border;
+
+    /** Constructs a new snake with a head and a tail. */
+    constructor Snake new(Border Aborder) {
+        let head = Square.new(128, 96, 16, border, null);
+        let tail = Square.new(96, 96, 16, border, head);
+        let size = 16;
+        let border = Aborder;
+
+        do head.draw();
+        do tail.draw();
+        
+        return this;
+    }
+    /** Disposes this snake. */
+    method void dispose() {
+        var Square current;
+        var Square next;
+
+        let current = tail;
+        while (~(current.getNext() = null)) {
+            let next = current.getNext();
+            do current.dispose();
+            let current = next;
+        }
+
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Returns the x coordinate of the head of the snake. */
+    method int getX() {
+        return head.getX();
+    }
+
+    /** Returns the y coordinate of the head of the snake. */
+    method int getY() {
+        return head.getY();
+    }
+
+    /** Returns the size of the snake. */
+    method int size() {
+        return size;
+    } 
+
+    /** Grows the snake by one square in the given direction. */
+    method void grow(int direction) {
+        var Square newTail;
+        var Square currentTail;
+        var int x;
+        var int y;
+
+        let currentTail = tail;
+        let x = currentTail.getX();
+        let y = currentTail.getY();
+
+        if (direction = 1) {
+            let newTail = Square.new(x, y + size, size, border, currentTail);
+        }
+        if (direction = 2) {
+            let newTail = Square.new(x, y - size, size, border, currentTail);
+        }
+        if (direction = 3) {
+            let newTail = Square.new(x - size, y, size, border, currentTail);
+        }
+        if (direction = 4) {
+            let newTail = Square.new(x + size, y, size, border, currentTail);
+        }
+
+        let tail = newTail;
+
+        do tail.draw();
+
+        return;
+    }
+
+    /**
+     * Advances the snake in the given direction. 
+     * Returns true if the snake can move in the given direction, false otherwise.
+     */
+    method boolean advance(int direction) { // 1 = up, 2 = down, 3 = right, 4 = left
+        var Square newHead;
+        var Square currentTail;
+        var int x;
+        var int y;
+
+        let x = head.getX();
+        let y = head.getY();
+
+        if (direction = 1) {
+            if (~isValidMove(x, y - size)) {
+                return false;
+            }
+            let newHead = Square.new(x, y - size, size, border, null);
+        }
+        if (direction = 2) {
+            if (~isValidMove(x, y + size)) {
+                return false;
+            }
+            let newHead = Square.new(x, y + size, size, border, null);
+        }
+        if (direction = 3) {
+            if (~isValidMove(x + size, y)) {
+                return false;
+            }
+            let newHead = Square.new(x + size, y, size, border, null);
+        }
+        if (direction = 4) {
+            if (~isValidMove(x - size, y)) {
+                return false;
+            }
+            let newHead = Square.new(x - size, y, size, border, null);
+        }
+
+        do head.setNext(newHead);
+        let head = newHead;
+        do head.draw();
+
+        let currentTail = tail;
+        let tail = tail.getNext();
+        do currentTail.erase();
+        do currentTail.dispose();
+
+        return true;
+    }
+
+    /**
+     * Returns true if the given coordinates are within the borders of the screen, false otherwise.
+     */
+    method boolean isValidMove(int x, int y) {
+        var int leftBorder;
+        var int rightBorder;
+        var int topBorder;
+        var int bottomBorder;
+
+        let leftBorder = border.getLeftBorder();
+        let rightBorder = border.getRightBorder();
+        let topBorder = border.getTopBorder();
+        let bottomBorder = border.getBottomBorder();
+
+        if ((x + size < leftBorder) | (x + size > rightBorder) | (y + size < topBorder) | (y + 16 > bottomBorder)) {
+            return false;
+        }
+
+        if (hitItself(x, y)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns true if the snake has hit itself, false otherwise.
+     */
+    method boolean hitItself(int x, int y) {
+        var Square current;
+        var int currentX;
+        var int currentY;
+
+        let current = tail;
+        while (~(current = null)) {
+            let currentX = current.getX();
+            let currentY = current.getY();
+
+            if ((currentX = x) & (currentY = y)) {
+                return true;
+            }
+
+            let current = current.getNext();
+        }
+
+        return false;
+    }
+
+}
