@@ -102,12 +102,20 @@ label IF_END1
 label IF_END0
 goto WHILE_EXP0
 label WHILE_END0
+push local 1
+call String.dispose 1
+pop temp 0
 push constant 0
 return
-function Keyboard.readInt 1
+function Keyboard.readInt 2
 push argument 0
 call Keyboard.readLine 1
 pop local 0
 push local 0
 call String.intValue 1
+pop local 1
+push local 0
+call String.dispose 1
+pop temp 0
+push local 1
 return

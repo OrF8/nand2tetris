@@ -37,7 +37,7 @@ class Sys {
     function void wait(int duration) {
         var int i, j;
         if (duration < 0) {
-            do Sys.error(1); // // duration must be positive
+            do Sys.error(1); // duration must be positive
         }
         let i = 0;
         while (i < duration) {

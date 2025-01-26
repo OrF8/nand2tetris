@@ -89,6 +89,7 @@ class Keyboard {
                     }
                 }
             }
+            do str.dispose();
             return 0;
         }     
 
@@ -100,7 +101,10 @@ class Keyboard {
          */
         function int readInt(String message) {
             var String input;
+            var int res;
             let input = Keyboard.readLine(message);
-            return input.intValue();
+            let res = input.intValue();
+            do input.dispose();
+            return res;
         }
 }

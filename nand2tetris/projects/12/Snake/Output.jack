@@ -239,8 +239,6 @@ class Output {
      * Displays the given character at the cursor location, and advances the cursor one column forward.
      */
     function void printChar(char c) {
-        // Your implementation should be as efficient as possible.
-        // For example, you can draw multiple pixels at once, for each row.
         var Array map;
         var int address;
         var int pixel;
