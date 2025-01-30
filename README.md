@@ -1,5 +1,5 @@
 # nand2tetris
-A repository for the projects in course **67925** (Computer Cons. Workshop: From Nand to Tetris) @ _The Hebrew Universty of Jerusalem_.  
+A repository for the projects in course **67925** (Computer Cons. Workshop: From Nand to Tetris) @ The Hebrew Universty of Jerusalem.  
 Each project corresponds to the instructions found [here](https://drive.google.com/drive/folders/1Cqm4VU9KzHzzejOjXbmQRTgYf0yazwb9?usp=drive_link).
 
 # Grades:
