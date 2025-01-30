@@ -1,5 +1,5 @@
 # nand2tetris
-A repository for the projects in course **67925** (Computer Cons. Workshop: From Nand to Tetris) @[HUJI](https://en.huji.ac.il/).  
+A repository for the projects in course [**67925**](https://shnaton.huji.ac.il/index.php/NewSyl/67925/2/2025/) (Computer Cons. Workshop: From Nand to Tetris) @[HUJI](https://en.huji.ac.il/).  
 Each project corresponds to the instructions found [here](https://drive.google.com/drive/folders/1Cqm4VU9KzHzzejOjXbmQRTgYf0yazwb9?usp=drive_link).
 
 # Grades:
