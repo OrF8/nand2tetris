@@ -14,6 +14,6 @@ Each project corresponds to the instructions found [here](https://drive.google.c
 | Project 7  | 91  |
 | Project 8  | 99.5 |
 | Project 9 (Made with [**Noam**](https://github.com/noam-kimhi)) | 100  |
-| Project 10 | 97.54 |
+| Project 10 | 100 |
 | Project 11 | 97.5 |
 | Project 12 | 100 |
