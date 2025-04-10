@@ -15,6 +15,7 @@ The repository is organized into the following projects:
 - **Project 10**: Compiler I
 - **Project 11**: Compiler II
 - **Project 12**: Operating System
+
 Each project is located in its respective subdirectory within the ````projects/```` folder.
 
 # 📊 Grades:
