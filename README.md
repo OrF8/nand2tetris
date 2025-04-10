@@ -1,5 +1,5 @@
 # nand2tetris
-This repository contains my implementations of the projects from course [**67925**](https://shnaton.huji.ac.il/index.php/NewSyl/67925/2/2025/) - Computer Cons. Workshop: From Nand to Tetris at the Hebrew University of Jerusalem ([**HUJI**](https://en.huji.ac.il/)).
+This repository contains my implementations of the projects from course [**67925**](https://shnaton.huji.ac.il/index.php/NewSyl/67925/2/2025/) - Computer Cons. Workshop: From Nand to Tetris at The Hebrew University of Jerusalem ([**HUJI**](https://en.huji.ac.il/)).
 
 # 📁 Project Structure
 The repository is organized into the following projects:
@@ -38,5 +38,5 @@ Each project is located in its respective subdirectory within the ````projects/`
 - [**Nand2Tetris Official Website**](https://www.nand2tetris.org/)
 - [**Projects Instructions**](https://drive.google.com/drive/folders/1Cqm4VU9KzHzzejOjXbmQRTgYf0yazwb9?usp=drive_link)
 
-# License
+# 📄 License
 This project is licensed under the MIT License – see the [**LICENSE**](https://github.com/OrF8/nand2tetris/blob/main/LICENSE) file for details.
