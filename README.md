@@ -1,5 +1,5 @@
 # nand2tetris
-This repository contains my implementations of the projects from course [**67925**](https://shnaton.huji.ac.il/index.php/NewSyl/67925/2/2025/) - Computer Cons. Workshop: From Nand to Tetris at [**HUJI**](https://en.huji.ac.il/).
+This repository contains my implementations of the projects from course [**67925**](https://shnaton.huji.ac.il/index.php/NewSyl/67925/2/2025/) - Computer Cons. Workshop: From Nand to Tetris at the Hebrew University of Jerusalem ([**HUJI**](https://en.huji.ac.il/)).
 
 # 📁 Project Structure
 The repository is organized into the following projects:
