@@ -16,7 +16,7 @@ The repository is organized into the following projects:
 - **Project 11**: Compiler II
 - **Project 12**: Operating System
 
-Each project is located in its respective subdirectory within the ````projects/```` folder.
+Each project is located in its respective subdirectory within the `nand2tetris/projects/` folder.
 
 # 📊 Grades:
 | Project   | Grade  |
