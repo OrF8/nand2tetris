@@ -39,4 +39,10 @@ Each project is located in its respective subdirectory within the `nand2tetris/p
 - [**Projects Instructions**](https://drive.google.com/drive/folders/1Cqm4VU9KzHzzejOjXbmQRTgYf0yazwb9?usp=drive_link)
 
 # 📄 License
-This project is licensed under the MIT License – see the [**LICENSE**](https://github.com/OrF8/nand2tetris/blob/main/LICENSE) file for details.
+All original code in this repository is licensed under the [**MIT LICENSE**](https://github.com/OrF8/nand2tetris/blob/main/LICENSE).
+
+Materials originating from the nand2tetris course (project descriptions,
+PDFs, and supplied resources) are licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
+Original course: https://www.nand2tetris.org
